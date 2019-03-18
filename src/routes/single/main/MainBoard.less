@@ -1,0 +1,145 @@
+@width: 60px;
+@height: @width;
+@height2: 200px;
+@border-color: grey;
+
+.root {
+  white-space: nowrap;
+  text-align: center;
+
+  > :first-child {
+    width: @width;
+    float: left;
+    cursor: pointer;
+
+    > * {
+      line-height: @height;
+      height: @height;
+      border: 1px solid @border-color;
+      border-bottom-width: 0;
+      position: relative;
+
+      &:last-child {
+        line-height: ~'calc(100vh - 3 * @{height})';
+        height: ~'calc(100vh - 3 * @{height})';
+        border-bottom-width: 1px;
+        background: yellow;
+
+        > * {
+          position: absolute;
+          width: @width;
+          overflow: hidden;
+          top: -1px;
+          left: -1px;
+          transition: width 0.3s;
+
+          > * {
+            display: inline-block;
+            vertical-align: top;
+          }
+
+          > :first-child {
+            width: @width;
+          }
+
+          > :last-child {
+            width: ~'calc(100vw - @{width} + 1px)';
+            line-height: 30px;
+            margin-left: -1px;
+          }
+
+          &[data-expand] {
+            width: 100vw;
+          }
+        }
+      }
+
+      &:not(:last-child) > * {
+        position: absolute;
+        width: @width;
+        overflow: hidden;
+        top: -1px;
+        left: -1px;
+        transition: width 0.3s;
+
+        > * {
+          width: @width;
+          height: @height + 1;
+          display: inline-block;
+          vertical-align: top;
+          border: solid 1px @border-color;
+          border-left-width: 0;
+        }
+
+        &[data-expand] {
+          width: @width * 3;
+        }
+      }
+    }
+  }
+
+  > :last-child {
+    margin-left: @width;
+
+    > :first-child {
+      > * {
+        display: inline-block;
+        vertical-align: top;
+        height: @height + 1;
+        line-height: @height + 1;
+        width: ~'calc(100% / 3)';
+        border: 1px solid @border-color;
+        border-left-width: 0;
+      }
+    }
+
+    > :nth-child(2){
+      height: @height2;
+      border-right: 1px solid @border-color;
+
+      > * {
+        display: inline-block;
+        vertical-align: top;
+      }
+
+      > :first-child {
+        width: ~'calc(100% / 3)';
+        line-height: @height2;
+        border-right: 1px solid @border-color;
+      }
+
+      > :last-child {
+        width: ~'calc(100% * 2 / 3)';
+        white-space: pre-wrap;
+
+        > * {
+          display: inline-block;
+          vertical-align: top;
+          width: ~'calc(100% / 3)';
+          line-height: @height2 / 2;
+        }
+      }
+    }
+
+    > :last-child {
+      border: 1px solid @border-color;
+      border-left-width: 0;
+      height: ~'calc(100vh - @{height} - @{height2} - 1px)';
+      line-height: ~'calc(100vh - @{height} - @{height2} - 1px)';
+    }
+  }
+}
+
+.table {
+  width: 100%;
+
+  th {
+    border: 1px solid @border-color;
+    background: #d7d7d7;
+  }
+
+  td {
+    border: 1px solid @border-color;
+    background: white;
+  }
+}

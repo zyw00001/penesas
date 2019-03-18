@@ -1,12 +1,12 @@
 import React from 'react';
-import MainBoard from './MainBoard';
+import MainBoardContainer from './MainBoardContainer';
 
 export default {
   path: '/',
 
   async action() {
     return {
-      component: <MainBoard/>
+      component: <MainBoardContainer/>
     };
   }
 };
