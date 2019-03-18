@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import withStyles from 'isomorphic-style-loader/withStyles';
 import s from './MainBoard.less';
+import {Link} from '../../../components';
 
 const COLS = [
   {key: 'key1', title: '工单号'},
@@ -118,7 +119,7 @@ class MainBoard extends React.Component {
             </div>
           </div>
         </div>
-        <div>
+        <Link to='/login'>
           <div>
             <div>注塑机编号</div>
             <div>工单号</div>
@@ -136,7 +137,7 @@ class MainBoard extends React.Component {
             </div>
           </div>
           <div>负荷率</div>
-        </div>
+        </Link>
       </div>
     );
   }

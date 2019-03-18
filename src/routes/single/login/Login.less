@@ -1,0 +1,23 @@
+@border-color: #797979;
+
+.root {
+  text-align: center;
+  white-space: nowrap;
+  font-size: 32px;
+
+  > * {
+    display: inline-block;
+    vertical-align: top;
+    width: 25vw;
+    line-height: 25vw;
+    height: 100vh;
+    border: 3px solid @border-color;
+    border-right-width: 0;
+    background: #99ccff;
+    writing-mode: vertical-lr;
+
+    &:last-child {
+      border-right-width: 3px;
+    }
+  }
+}

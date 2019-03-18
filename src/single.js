@@ -5,6 +5,7 @@ create({
 
   children: [
     require('./routes/single/main').default,
+    require('./routes/single/login').default,
     require('./routes/notFound').default
   ],
 
