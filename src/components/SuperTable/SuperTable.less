@@ -1,0 +1,53 @@
+@import '../variables.less';
+
+.root {
+  border-spacing: 0;
+  cursor: default;
+
+  table {
+    white-space: pre;
+
+    :global(.ant-checkbox-input) {
+      z-index: -1;
+    }
+  }
+}
+
+.select {
+  background-color: @table-row-hover-bg;
+}
+
+.center {
+  text-align: center !important;
+}
+
+.left {
+  text-align: left !important;
+}
+
+.right {
+  text-align: right !important;
+}
+
+.unReadRowSelect{
+  background-color: @table-row-hover-bg;
+  color :#000;
+  font-weight: 700;
+}
+.unReadRowUnselect{
+  color :#000;
+  font-weight: 700;
+}
+
+.noTransition{
+  tr {
+    transition: all 0s!important;
+    >td{
+      transition: all 0s!important;
+    }
+  }
+}
+
+.noWrap{
+  white-space: nowrap;
+}

@@ -1,0 +1,12 @@
+@import '../variables.less';
+
+.root > *:first-child {
+  display: inline-block;
+  color: @brand-primary;
+  line-height: 1.2;
+
+  &[data-border='true'] {
+    padding: 0 5px;
+    border-left: @brand-primary solid 3px;
+  }
+}

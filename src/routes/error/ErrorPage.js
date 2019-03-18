@@ -1,0 +1,33 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+import withStyles from 'isomorphic-style-loader/withStyles';
+import s from './ErrorPage.less';
+
+class ErrorPage extends React.Component {
+  static propTypes = {
+    error: PropTypes.object.isRequired,
+  };
+
+  render() {
+    if (process.env.NODE_ENV !== 'production') {
+      const { error } = this.props;
+      return (
+        <div>
+          <h1>{error.name}</h1>
+          <p>{error.message}</p>
+          <pre>{error.stack}</pre>
+        </div>
+      );
+    }
+
+    return (
+      <div>
+        <h1>Error</h1>
+        <p>Sorry, a critical error occurred on this page.</p>
+      </div>
+    );
+  }
+}
+
+export { ErrorPage as ErrorPageWithoutStyle };
+export default withStyles(s)(ErrorPage);
