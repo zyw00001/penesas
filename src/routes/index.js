@@ -6,6 +6,7 @@ export default {
     require('./single/main').default,
     require('./single/login').default,
     require('./single/loginUser').default,
+    require('./single/workCheck').default,
     require('./notFound').default
   ],
 
