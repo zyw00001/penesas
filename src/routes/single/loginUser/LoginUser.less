@@ -1,0 +1,43 @@
+.root {
+  text-align: center;
+
+  > :first-child {
+    font-size: 20px;
+    line-height: 40px;
+    border-bottom: 1px solid #797979;
+    background-color: #ccc;
+  }
+
+  > :last-child {
+    padding: 0 10%;
+    margin-top: ~'calc((100vh - 150px) / 2)';
+
+    > :first-child {
+      font-size: 16px;
+    }
+
+    > :nth-child(2) {
+      position: relative;
+      margin: 20px 0 30px;
+
+      input {
+        text-align: center;
+      }
+
+      &::after {
+        position: absolute;
+        display: block;
+        content: ~'attr(data-error)';
+        color: red;
+      }
+    }
+
+    > :last-child {
+      button {
+        color: black;
+        background: #c9c9c9;
+        border: 1px solid #797979;
+      }
+    }
+  }
+}

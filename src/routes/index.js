@@ -5,6 +5,7 @@ export default {
   children: [
     require('./single/main').default,
     require('./single/login').default,
+    require('./single/loginUser').default,
     require('./notFound').default
   ],
 

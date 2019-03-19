@@ -1,0 +1,58 @@
+@width: 140px;
+@border-color: #797979;
+
+.root {
+  > :first-child {
+    float: left;
+    width: @width;
+    text-align: center;
+    font-size: 18px;
+
+    > * {
+      height: 25vh;
+      line-height: 25vh;
+      border: 1px solid @border-color;
+      border-bottom-width: 0;
+      background-color: #ccc;
+
+      &:last-child {
+        border-bottom-width: 1px;
+      }
+
+      &[data-active] {
+        background-color: #0099ff;
+        position: relative;
+
+        &::before {
+          display: block;
+          content: ' ';
+          position: absolute;
+          top: 0;
+          right: 0;
+          width: 30px;
+          background-color: #ccc;
+          height: ~'calc(25vh - 1px)';
+        }
+
+        &::after {
+          display: block;
+          content: ' ';
+          position: absolute;
+          top: 0;
+          right: 0;
+          border-top: 12.5vh solid transparent;
+          border-bottom: 12.5vh solid transparent;
+          border-left: 30px solid #0099ff;
+        }
+      }
+    }
+  }
+
+  > :last-child {
+    margin-left: @width;
+    height: 100vh;
+    border: 1px solid @border-color;
+    border-left-width: 0;
+    background: white;
+  }
+}

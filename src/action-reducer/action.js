@@ -23,7 +23,7 @@ const createActionType = (typePrefix) => {
 };
 
 class Action {
-  constructor(typePrefix, hasParent = true) {
+  constructor(typePrefix, hasParent = false) {
     this.TYPE = createActionType(typePrefix);
     if (hasParent) {
       this.PARENT = createActionType(typePrefix.slice(0, -1));

@@ -11,7 +11,7 @@ function isModifiedEvent(event) {
 }
 
 function jump(url) {
-  if (history.location.pathname != url) {
+  if (history.location.pathname !== url) {
     history.push(url);
   } else {
     history.replace(url);
