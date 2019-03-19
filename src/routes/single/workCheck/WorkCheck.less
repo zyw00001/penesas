@@ -1,3 +1,44 @@
 .root {
+  padding: 0 10%;
+  font-size: 14px;
 
+  > * {
+    margin-top: ~'calc((100vh - 220px) / 2)';
+
+    > * {
+      margin-bottom: 20px;
+    }
+
+    > *:last-child {
+      text-align: right;
+
+      > :first-child {
+        margin-right: 5px;
+      }
+    }
+  }
+
+  [data-role='input'] {
+    white-space: nowrap;
+    line-height: 28px;
+
+    > * {
+      display: inline-block;
+      vertical-align: top;
+    }
+
+    > :first-child {
+      width: 60px;
+      text-align: right;
+      margin-right: 10px;
+    }
+
+    > :last-child {
+      width: ~'calc(100% - 70px)';
+    }
+
+    :global(.ant-select) {
+      width: 100%;
+    }
+  }
 }
