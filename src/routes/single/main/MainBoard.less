@@ -105,20 +105,21 @@
       }
 
       > :first-child {
-        width: ~'calc(100% / 3)';
+        width: 200px;
+        height: @height2;
         line-height: @height2;
-        border-right: 1px solid @border-color;
+        border-right: 1px dashed @border-color;
       }
 
       > :last-child {
-        width: ~'calc(100% * 2 / 3)';
+        width: ~'calc(100% - 200px)';
         white-space: pre-wrap;
 
         > * {
           display: inline-block;
           vertical-align: top;
           width: ~'calc(100% / 3)';
-          line-height: @height2 / 2;
+          height: @height2 / 2;
         }
       }
     }

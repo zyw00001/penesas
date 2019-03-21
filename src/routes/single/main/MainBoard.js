@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import withStyles from 'isomorphic-style-loader/withStyles';
 import s from './MainBoard.less';
 import {Link} from '../../../components';
+import {VictoryPie} from 'victory';
 
 const COLS = [
   {key: 'key1', title: '工单号'},
@@ -22,6 +23,59 @@ const Table = ({cols, items}) => {
       <tbody>{items.map(toRow)}</tbody>
     </table>
   )
+};
+
+const Pie = ({count=0, total=1, label}) => {
+  const props = {
+    data: [{x: count, y: count}, {x: '', y: total - count}],
+    style: {data: {stroke: 'black', strokeWidth: 3}},
+    labels: d => d.x,
+    labelRadius: 60,
+    colorScale: ['#99ffff']
+  };
+  const parentStyle = {position: 'relative'};
+  const labelStyle = {
+    position: 'absolute',
+    width: '100%',
+    textAlign: 'center',
+    top: '60px',
+    lineHeight: '1'
+  };
+  return (
+    <div style={parentStyle}>
+      <VictoryPie {...props} />
+      <div style={labelStyle}>{label}</div>
+    </div>
+  );
+};
+
+const percent = (count ,total) => {
+  return `${Number((count * 100 / total).toFixed(2))}%`;
+};
+
+const PieStatistics = ({count=0, total=1}) => {
+  const props = {
+    data: [{y: count}, {y: total - count}],
+    style: {data: {stroke: 'black', strokeWidth: 3}},
+    labels: () => '',
+    colorScale: ['#9999ff']
+  };
+  const parentStyle = {position: 'relative'};
+  const labelStyle = {
+    position: 'absolute',
+    height: '100%',
+    top: 0,
+    fontSize: '16px'
+  };
+  const label1Style = Object.assign({left: '30px', color: '#ff56cf'}, labelStyle);
+  const label2Style = Object.assign({right: '40px', color: '#993359'}, labelStyle);
+  return (
+    <div style={parentStyle}>
+      <VictoryPie {...props} />
+      <div style={label1Style}>{percent(count, total)}</div>
+      <div style={label2Style}>{`${count}/${total}`}</div>
+    </div>
+  );
 };
 
 class MainBoard extends React.Component {
@@ -126,14 +180,14 @@ class MainBoard extends React.Component {
             <div>单号</div>
           </div>
           <div>
-            <div>统计</div>
+            <PieStatistics count={38} total={65} />
             <div>
-              <div>水口</div>
-              <div>毛刺</div>
-              <div>油污</div>
-              <div>外观</div>
-              <div>捆绑</div>
-              <div>其他</div>
+              <Pie count={5} total={65} label='水口'/>
+              <Pie count={3} total={65} label='毛刺'/>
+              <Pie count={25} total={65} label='油污'/>
+              <Pie count={0} total={65} label='外观'/>
+              <Pie count={0} total={65} label='捆绑'/>
+              <Pie count={5} total={65} label='其他'/>
             </div>
           </div>
           <div>负荷率</div>
