@@ -3,6 +3,7 @@ import withStyles from 'isomorphic-style-loader/withStyles';
 import s from './WorkCheck.less';
 import TabPage from '../login/TabPage';
 import {Input, Select, Button, Radio, Checkbox} from 'antd';
+import Link from "../../../components/Link";
 /*import execWithLoading from '../../../common/execWithLoading';
 import helper from '../../../common';
 import {setUser} from '../main/MainBoardContainer';
@@ -12,10 +13,27 @@ const RadioGroup = Radio.Group;
 const CheckboxGroup = Checkbox.Group;
 
 class WorkCheck extends React.Component {
-  state = {result: '合格'};
+  state = {result: '合格', trouble: []};
 
   onResultChange = (e) => {
     this.setState({result: e.target.value});
+  };
+
+  groupProps = () => {
+    return {
+      options: [
+        {label: '水口', value: '2'},
+        {label: '毛刺', value: '3'},
+        {label: '油污', value: '4'},
+        {label: '外观', value: '5'},
+        {label: '捆包', value: '6'},
+        {label: '尺寸', value: '7'},
+        {label: '其他', value: '8'},
+      ],
+      disabled: this.state.result === '合格',
+      value: this.state.trouble,
+      onChange: (value) => this.setState({trouble: value}),
+    };
   };
 
   render() {
@@ -28,7 +46,7 @@ class WorkCheck extends React.Component {
           </div>
           <div data-role='input'>
             <div>内检员:</div>
-            <div><Input /></div>
+            <div><Input placeholder='限定输入8位' /></div>
           </div>
           <div data-role='input'>
             <div>内检结果:</div>
@@ -38,19 +56,13 @@ class WorkCheck extends React.Component {
             </RadioGroup>
           </div>
           <div>
-            <CheckboxGroup>
-              <Checkbox>水口</Checkbox>
-              <Checkbox>毛刺</Checkbox>
-              <Checkbox>油污</Checkbox>
-              <Checkbox>外观</Checkbox>
-              <Checkbox>捆包</Checkbox>
-              <Checkbox>尺寸</Checkbox>
-              <Checkbox>其他</Checkbox>
-            </CheckboxGroup>
+            <CheckboxGroup {...this.groupProps()} />
           </div>
           <div>
             <Button>提交</Button>
-            <Button>返回</Button>
+            <Button>
+              <Link to='/'>返回</Link>
+            </Button>
           </div>
         </div>
       </TabPage>
