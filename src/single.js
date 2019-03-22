@@ -8,6 +8,7 @@ create({
     require('./routes/single/login').default,
     require('./routes/single/loginUser').default,
     require('./routes/single/workCheck').default,
+    require('./routes/single/qcCheck').default,
     require('./routes/notFound').default
   ],
 

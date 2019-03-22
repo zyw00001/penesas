@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import withStyles from 'isomorphic-style-loader/withStyles';
 import s from './WorkCheck.less';
 import TabPage from '../login/TabPage';
@@ -13,6 +14,10 @@ const RadioGroup = Radio.Group;
 const CheckboxGroup = Checkbox.Group;
 
 class WorkCheck extends React.Component {
+  static propTypes = {
+    isQC: PropTypes.bool
+  };
+
   state = {result: '合格', trouble: []};
 
   onResultChange = (e) => {
@@ -37,22 +42,23 @@ class WorkCheck extends React.Component {
   };
 
   render() {
+    const {isQC} = this.props;
     return (
-      <TabPage className={s.root} active='work'>
+      <TabPage className={s.root} active={isQC ? 'Q' : 'work'}>
         <div>
           <div data-role='input'>
             <div>工单号:</div>
             <div><Select /></div>
           </div>
           <div data-role='input'>
-            <div>内检员:</div>
+            <div>{isQC ? 'QC员:' : '内检员:'}</div>
             <div><Input placeholder='限定输入8位' /></div>
           </div>
           <div data-role='input'>
-            <div>内检结果:</div>
+            <div>{isQC ? '巡检结果:' : '内检结果:'}</div>
             <RadioGroup value={this.state.result} onChange={this.onResultChange}>
               <Radio value='合格'>合格</Radio>
-              <Radio value='NG'>待处理</Radio>
+              <Radio value='NG'>{isQC ? '不合格' : '待处理'}</Radio>
             </RadioGroup>
           </div>
           <div>
