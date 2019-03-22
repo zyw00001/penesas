@@ -48,7 +48,7 @@ class Link extends React.Component {
     if (disabled) {
       return <a {...props}>{children}</a>;
     } else {
-      return <a href={to} {...props} onClick={this.handleClick}>{children}</a>;
+      return <a {...props} onClick={this.handleClick}>{children}</a>;
     }
   }
 }

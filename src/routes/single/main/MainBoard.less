@@ -19,6 +19,7 @@
       border: 1px solid @border-color;
       border-bottom-width: 0;
       position: relative;
+      z-index: 1;
 
       &:last-child {
         line-height: ~'calc(100vh - 3 * @{height})';
@@ -128,7 +129,27 @@
       border: 1px solid @border-color;
       border-left-width: 0;
       height: ~'calc(100vh - @{height} - @{height2} - 1px)';
-      line-height: ~'calc(100vh - @{height} - @{height2} - 1px)';
+      overflow: hidden;
+      padding: 10px 10px 0;
+
+      > :first-child {
+        height: ~'calc(100% - 29px)';
+      }
+
+      > :last-child {
+        text-align: right;
+        padding-top: 1px;
+
+        > button {
+          border: solid 1px #737373;
+          color: #0033ff;
+          border-bottom-width: 0;
+
+          &:first-child {
+            margin-right: 5px;
+          }
+        }
+      }
     }
   }
 }

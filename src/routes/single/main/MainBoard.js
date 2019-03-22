@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import withStyles from 'isomorphic-style-loader/withStyles';
 import s from './MainBoard.less';
 import {Link} from '../../../components';
-import {VictoryPie} from 'victory';
+import {VictoryPie, VictoryChart, VictoryLine, VictoryScatter, VictoryAxis} from 'victory';
+import {Button} from 'antd';
 
 const COLS = [
   {key: 'key1', title: '工单号'},
@@ -78,12 +79,44 @@ const PieStatistics = ({count=0, total=1}) => {
   );
 };
 
+const Chart = ({data, title}) => {
+  const CHART_COLOR = '#999999';
+  const xStyle = {
+    axis: {stroke: CHART_COLOR},
+  };
+  const yStyle = {
+    axis: {stroke: CHART_COLOR},
+    grid: {stroke: CHART_COLOR, strokeDasharray: '2,5'},
+  };
+  const titleStyle = {
+    position: 'absolute',
+    width: '100%',
+    textAlign: 'center',
+    fontSize: '20px',
+    color: 'black',
+    top: '20px'
+  };
+  const tickValues = data.map(item => item.x);
+  return (
+    <div style={{position: 'relative', background: 'white'}}>
+      <div style={titleStyle}>{title || '负荷率'}</div>
+      <VictoryChart width={1024}>
+        <VictoryLine data={data} style={{data: {stroke: '#4f81bd'}}}/>
+        <VictoryScatter data={data} size={5} symbol='diamond' style={{data: {fill: '#4f81bd'}}} />
+        <VictoryAxis style={xStyle} tickValues={tickValues} />
+        <VictoryAxis style={yStyle} dependentAxis />
+      </VictoryChart>
+    </div>
+  );
+};
+
 class MainBoard extends React.Component {
   static propTypes = {
     user: PropTypes.object,
     workCheck: PropTypes.object,
     QCheck: PropTypes.object,
-    items: PropTypes.array
+    items: PropTypes.array,
+    data: PropTypes.array
   };
 
   state = {expand: ''};
@@ -140,7 +173,7 @@ class MainBoard extends React.Component {
   };
 
   render() {
-    const {user={}, workCheck={}, QCheck={}, items=[]} = this.props;
+    const {user={}, workCheck={}, QCheck={}, items=[], data=[]} = this.props;
     const style = {lineHeight: '20px', paddingTop: '10px', whiteSpace: 'pre-wrap'};
     return (
       <div className={s.root}>
@@ -190,7 +223,13 @@ class MainBoard extends React.Component {
               <Pie count={5} total={65} label='其他'/>
             </div>
           </div>
-          <div>负荷率</div>
+          <div>
+            <Chart data={data} />
+            <div onClick={e => e.stopPropagation()}>
+              <Button>日</Button>
+              <Button>月</Button>
+            </div>
+          </div>
         </Link>
       </div>
     );
