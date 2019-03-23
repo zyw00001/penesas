@@ -1,0 +1,114 @@
+.root {
+  white-space: nowrap;
+
+  > * {
+    display: inline-block;
+    vertical-align: top;
+  }
+
+  > :first-child {
+    padding: 20px;
+    width: 300px;
+    height: inherit;
+    border-right: 2px solid #797979;
+
+    > *:not(:last-child) {
+      margin-bottom: 20px;
+      line-height: 28px;
+
+      > :first-child {
+        width: 70px;
+        float: left;
+        font-size: 14px;
+      }
+
+      > :last-child {
+        margin-left: 70px;
+
+        :global(.ant-select) {
+          width: 100%;
+        }
+
+        input {
+          border: 1px solid #797979;
+        }
+      }
+    }
+
+    > :last-child {
+      margin: 0 -20px;
+      border-top: 2px solid #797979;
+    }
+  }
+
+  > :last-child {
+    width: ~'calc(100% - 300px)';
+    padding: 10px 20px;
+  }
+
+  > [data-role='login'] {
+    > :first-child {
+      text-align: center;
+      font-size: 18px;
+      margin-bottom: 40px;
+    }
+
+    > :nth-child(2),
+    > :nth-child(3) {
+      margin-bottom: 20px;
+
+      > :first-child {
+        margin-bottom: 10px;
+        font-size: 14px;
+      }
+    }
+
+    > :last-child {
+      text-align: right;
+
+      button {
+        background: #2696cd;
+        color: white;
+        width: 80px;
+      }
+    }
+  }
+
+  > [data-role='setting'] {
+    > :first-child {
+      text-align: center;
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+
+    > :nth-child(2) {
+      > * {
+        margin-bottom: 5px;
+        line-height: 28px;
+
+        > :first-child {
+          display: inline-block;
+          width: 70px;
+        }
+
+        > :last-child {
+          width: ~'calc(100% - 70px)';
+        }
+
+        input {
+          border-width: 0 !important;
+          border-bottom: 1px solid grey !important;
+          box-shadow: none !important;
+        }
+      }
+    }
+
+    > :last-child {
+      text-align: right;
+
+      > :first-child {
+        margin-right: 5px;
+      }
+    }
+  }
+}

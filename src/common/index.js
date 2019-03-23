@@ -48,16 +48,14 @@ const fetchJson = async (url, option, cookie=true) => {
 
 // node端获取json数据
 const fetchJsonByNode = (req, url, option) => {
-  const {token} = req.cookies;
-  const cookie = {'Cookie': `token=${token}`};
   if (typeof option === 'string') {
-    option = {method: option, headers: cookie};
+    option = {method: option};
   } else if (typeof option === 'undefined') {
-    option = {headers: cookie};
+    option = {};
   } else if (option.headers) {
-    Object.assign(option.headers, cookie);
+    Object.assign(option.headers);
   } else {
-    Object.assign(option, {headers: cookie});
+    Object.assign(option, {headers});
   }
   return fetchJson(url, option, false);
 };

@@ -5,6 +5,7 @@ import s from './MainBoard.less';
 import {Link} from '../../../components';
 import {VictoryPie, VictoryChart, VictoryLine, VictoryScatter, VictoryAxis} from 'victory';
 import {Button} from 'antd';
+import moment from 'moment';
 
 const COLS = [
   {key: 'key1', title: '工单号'},
@@ -13,6 +14,15 @@ const COLS = [
   {key: 'key4', title: '注塑机编号'},
   {key: 'key5', title: '制造开始时间'},
   {key: 'key6', title: '制造结束时间'},
+];
+
+const PIES = [
+  {key: 'waterHole', title: '水口'},
+  {key: 'burr', title: '毛刺'},
+  {key: 'oil', title: '油污'},
+  {key: 'face', title: '外观'},
+  {key: 'bale', title: '捆绑'},
+  {key: 'other', title: '其他'},
 ];
 
 const Table = ({cols, items}) => {
@@ -32,7 +42,7 @@ const Pie = ({count=0, total=1, label}) => {
     style: {data: {stroke: 'black', strokeWidth: 3}},
     labels: d => d.x,
     labelRadius: 60,
-    colorScale: ['#99ffff']
+    colorScale: ['#99ffff', 'pink']
   };
   const parentStyle = {position: 'relative'};
   const labelStyle = {
@@ -59,7 +69,7 @@ const PieStatistics = ({count=0, total=1}) => {
     data: [{y: count}, {y: total - count}],
     style: {data: {stroke: 'black', strokeWidth: 3}},
     labels: () => '',
-    colorScale: ['#9999ff']
+    colorScale: ['#9999ff', 'pink']
   };
   const parentStyle = {position: 'relative'};
   const labelStyle = {
@@ -79,7 +89,7 @@ const PieStatistics = ({count=0, total=1}) => {
   );
 };
 
-const Chart = ({data, title}) => {
+const Chart = ({month, day, type}) => {
   const CHART_COLOR = '#999999';
   const xStyle = {
     axis: {stroke: CHART_COLOR},
@@ -96,10 +106,12 @@ const Chart = ({data, title}) => {
     color: 'black',
     top: '20px'
   };
-  const tickValues = data.map(item => item.x);
+  const data = type === 'day' ? day : month;
+  const length = type === 'day' ? moment().daysInMonth() : data.length;
+  const tickValues = new Array(length).fill(0).map((item, index) => index + 1);
   return (
     <div style={{position: 'relative', background: 'white'}}>
-      <div style={titleStyle}>{title || '负荷率'}</div>
+      <div style={titleStyle}>负荷率</div>
       <VictoryChart width={1024}>
         <VictoryLine data={data} style={{data: {stroke: '#4f81bd'}}}/>
         <VictoryScatter data={data} size={5} symbol='diamond' style={{data: {fill: '#4f81bd'}}} />
@@ -116,7 +128,10 @@ class MainBoard extends React.Component {
     workCheck: PropTypes.object,
     QCheck: PropTypes.object,
     items: PropTypes.array,
-    data: PropTypes.array
+    day: PropTypes.array,
+    month: PropTypes.array,
+    chart: PropTypes.string.isRequired,
+    onChartChange: PropTypes.func.isRequired
   };
 
   state = {expand: ''};
@@ -151,13 +166,13 @@ class MainBoard extends React.Component {
       if (!this.props.workCheck) {
         return grey;
       } else {
-        return this.props.workCheck.result === '合格' ? '#33ff00' : 'red';
+        return this.props.workCheck.result === 1 ? '#33ff00' : 'red';
       }
     } else if (key === 'Q') {
       if (!this.props.QCheck) {
         return grey;
       } else {
-        return this.props.QCheck.result === '合格' ? '#33ff00' : 'red';
+        return this.props.QCheck.result === 1 ? '#33ff00' : 'red';
       }
     }
   };
@@ -170,6 +185,19 @@ class MainBoard extends React.Component {
       },
       onClick: this.setExpand.bind(null, key)
     }
+  };
+
+  calTrouble = () => {
+    return PIES.reduce((result, pie) => {
+      return result + (this.props[pie.key] || 0);
+    }, 0);
+  };
+
+  renderPies = () => {
+    const renderPie = (item, index) => {
+      return <Pie key={index} count={this.props[item.key] || 0} total={this.props.realCycle} label={item.title}/>;
+    };
+    return <div>{PIES.map(renderPie)}</div>;
   };
 
   render() {
@@ -208,26 +236,19 @@ class MainBoard extends React.Component {
         </div>
         <Link to='/login'>
           <div>
-            <div>注塑机编号</div>
-            <div>工单号</div>
-            <div>单号</div>
+            <div>{this.props.machineNo}</div>
+            <div>{this.props.orderNo}</div>
+            <div>{this.props.partsNo}</div>
           </div>
           <div>
-            <PieStatistics count={38} total={65} />
-            <div>
-              <Pie count={5} total={65} label='水口'/>
-              <Pie count={3} total={65} label='毛刺'/>
-              <Pie count={25} total={65} label='油污'/>
-              <Pie count={0} total={65} label='外观'/>
-              <Pie count={0} total={65} label='捆绑'/>
-              <Pie count={5} total={65} label='其他'/>
-            </div>
+            <PieStatistics count={this.calTrouble()} total={this.props.realCycle} />
+            {this.renderPies()}
           </div>
           <div>
-            <Chart data={data} />
+            <Chart month={this.props.month} day={this.props.day} type={this.props.chart} />
             <div onClick={e => e.stopPropagation()}>
-              <Button>日</Button>
-              <Button>月</Button>
+              <Button onClick={() => this.props.onChartChange('day')}>日</Button>
+              <Button onClick={() => this.props.onChartChange('month')}>月</Button>
             </div>
           </div>
         </Link>
