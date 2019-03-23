@@ -7,7 +7,7 @@ const ITEMS = [
   {title: '作业上岗', to: '/login/user'},
   {title: '工程内检', to: '/login/work_check'},
   {title: 'QC巡检', to: '/login/qc_check'},
-  {title: '负荷入力', to: '/'},
+  {title: '负荷入力', to: '/login/load_setting'},
 ];
 
 const Login = () => {
