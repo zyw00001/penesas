@@ -5,39 +5,94 @@ import s from './WorkCheck.less';
 import TabPage from '../login/TabPage';
 import {Input, Select, Button, Radio, Checkbox} from 'antd';
 import Link from "../../../components/Link";
-/*import execWithLoading from '../../../common/execWithLoading';
+import execWithLoading from '../../../common/execWithLoading';
 import helper from '../../../common';
-import {setUser} from '../main/MainBoardContainer';
-import {jump} from '../../../components/Link';*/
+import {refresh} from '../main/MainBoardContainer';
+import {jump} from '../../../components/Link';
 
 const RadioGroup = Radio.Group;
 const CheckboxGroup = Checkbox.Group;
+const SelectOption = Select.Option;
+const URL_CHECK = '/api/single/login/check';
+
+const TROUBLE_OPTIONS = [
+  {label: '水口', value: 'waterHole'},
+  {label: '毛刺', value: 'burr'},
+  {label: '油污', value: 'oil'},
+  {label: '外观', value: 'face'},
+  {label: '捆绑', value: 'bale'},
+  {label: '尺寸', value: 'size'},
+  {label: '其他', value: 'other'},
+];
 
 class WorkCheck extends React.Component {
   static propTypes = {
     isQC: PropTypes.bool
   };
 
-  state = {result: '合格', trouble: []};
+  state = {
+    result: '1',
+    trouble: [],
+    options: ['002', '003'],
+    orderNo: '002',
+    user: ''
+  };
 
   onResultChange = (e) => {
     this.setState({result: e.target.value});
   };
 
+  onSubmit = () => {
+    if (!this.state.user) {
+      helper.showError('请输入员工编号');
+    } else if (this.state.user.length !== 8) {
+      helper.showError('员工编号固定为8位');
+    } else {
+      execWithLoading(async () => {
+        const body = {
+          orderNo: this.state.orderNo,
+          employeeId: this.state.user,
+          qcType: this.props.isQC ? 1 : 0,
+          result: Number(this.state.result)
+        };
+        if (this.state.result === '0') {
+          for (const item of TROUBLE_OPTIONS) {
+            body[item.value] = this.state.trouble.includes(item.value) ? 1 : 0;
+          }
+        }
+        const option = helper.postOption(body);
+        const json = await helper.fetchJson(URL_CHECK, option);
+        if (json.returnCode !== 0) {
+          helper.showError(json.returnMsg);
+        } else {
+          refresh(json.result);
+          jump('/');
+        }
+      });
+    }
+  };
+
   groupProps = () => {
     return {
-      options: [
-        {label: '水口', value: '2'},
-        {label: '毛刺', value: '3'},
-        {label: '油污', value: '4'},
-        {label: '外观', value: '5'},
-        {label: '捆包', value: '6'},
-        {label: '尺寸', value: '7'},
-        {label: '其他', value: '8'},
-      ],
-      disabled: this.state.result === '合格',
+      options: TROUBLE_OPTIONS,
+      disabled: this.state.result === '1',
       value: this.state.trouble,
       onChange: (value) => this.setState({trouble: value}),
+    };
+  };
+
+  selectProps = () => {
+    return {
+      value: this.state.orderNo,
+      onSelect: (value) => this.setState({orderNo: value})
+    };
+  };
+
+  inputProps = () => {
+    return {
+      value: this.state.user,
+      placeholder: '限定输入8位',
+      onChange: e => this.setState({user: e.target.value})
     };
   };
 
@@ -48,24 +103,28 @@ class WorkCheck extends React.Component {
         <div>
           <div data-role='input'>
             <div>工单号:</div>
-            <div><Select /></div>
+            <div>
+              <Select {...this.selectProps()}>
+                {this.state.options.map((option, index) => <SelectOption key={index} value={option}>{option}</SelectOption>)}
+              </Select>
+            </div>
           </div>
           <div data-role='input'>
             <div>{isQC ? 'QC员:' : '内检员:'}</div>
-            <div><Input placeholder='限定输入8位' /></div>
+            <div><Input {...this.inputProps()} /></div>
           </div>
           <div data-role='input'>
             <div>{isQC ? '巡检结果:' : '内检结果:'}</div>
             <RadioGroup value={this.state.result} onChange={this.onResultChange}>
-              <Radio value='合格'>合格</Radio>
-              <Radio value='NG'>{isQC ? '不合格' : '待处理'}</Radio>
+              <Radio value='1'>合格</Radio>
+              <Radio value='0'>{isQC ? '不合格' : '待处理'}</Radio>
             </RadioGroup>
           </div>
           <div>
             <CheckboxGroup {...this.groupProps()} />
           </div>
           <div>
-            <Button>提交</Button>
+            <Button onClick={this.onSubmit}>提交</Button>
             <Button>
               <Link to='/'>返回</Link>
             </Button>

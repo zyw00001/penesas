@@ -177,6 +177,15 @@ class MainBoard extends React.Component {
     }
   };
 
+  getCheckTitle = (key) => {
+    const obj = this.props[key];
+    if (obj) {
+      return obj.result === 1 ? '合格' : 'NG';
+    } else {
+      return '';
+    }
+  };
+
   getProps = (key) => {
     return {
       'data-expand': this.isExpand(key),
@@ -210,21 +219,21 @@ class MainBoard extends React.Component {
             <div {...this.getProps('user')}>
               <div>照片</div>
               <div>{user.name || ''}</div>
-              <div>{user.level || ''}</div>
+              <div>{user.grade || ''}</div>
             </div>
           </div>
           <div>
             <div {...this.getProps('work')}>
               <div>工</div>
               <div style={style}>{workCheck.time || ''}</div>
-              <div>{workCheck.result || ''}</div>
+              <div>{this.getCheckTitle('workCheck')}</div>
             </div>
           </div>
           <div>
             <div {...this.getProps('Q')}>
               <div>Q</div>
               <div style={style}>{QCheck.time || ''}</div>
-              <div>{QCheck.result || ''}</div>
+              <div>{this.getCheckTitle('QCheck')}</div>
             </div>
           </div>
           <div>

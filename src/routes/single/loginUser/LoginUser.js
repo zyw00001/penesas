@@ -5,7 +5,7 @@ import TabPage from '../login/TabPage';
 import {Input, Button} from 'antd';
 import execWithLoading from '../../../common/execWithLoading';
 import helper from '../../../common';
-import {setUser} from '../main/MainBoardContainer';
+import {refresh} from '../main/MainBoardContainer';
 import {jump} from '../../../components/Link';
 
 const URL_LOGIN = '/api/single/login/user';
@@ -27,12 +27,12 @@ class LoginUser extends React.Component {
         if (json.returnCode !== 0) {
           this.setState({error: json.returnMsg});
         } else {
-          setUser(json.result);
           this.setState({time: 3, login: true});
           const id = setInterval(() => {
             const time = this.state.time - 1;
             if (time < 0) {
               clearInterval(id);
+              refresh(json.result);
               jump('/');
             } else {
               this.setState({time});

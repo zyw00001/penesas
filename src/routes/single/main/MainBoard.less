@@ -71,10 +71,14 @@
           vertical-align: top;
           border: solid 1px @border-color;
           border-left-width: 0;
+
+          &:nth-child(2) {
+            width: @width + 20px;
+          }
         }
 
         &[data-expand] {
-          width: @width * 3;
+          width: @width * 3 + 20px;
         }
       }
     }

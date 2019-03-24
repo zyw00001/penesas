@@ -5,18 +5,15 @@ import moment from 'moment';
 
 const api = express.Router();
 
-const random = (min, max) => {
-  return Number((Math.random() * (max - min)).toFixed(2));
-};
+const DAY_KEYS = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven',
+  'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen', 'twenty',
+  'twentyOne', 'twentyTwo', 'twentyThree', 'twentyFour', 'twentyFive', 'twentySix', 'twentySeven',
+  'twentyEight', 'twentyNine', 'thirty', 'thirtyOne'];
+const MONTH_KEYS = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september',
+  'october', 'november', 'december'];
 
-const data = {
-  workCheck: {time: '2019-3-4\n10:35', result: '合格'},
-  QCheck: {time: '2019-3-4\n10:35', result: 'NG'},
-  items: [
-    {key1: 'K0941605', key2: '220023943-01', key3: '65', key4: '101', key5: '2018-12-24', key6: '2018-12-30'},
-    {key1: 'K0941700', key2: '220023943-01', key3: '65', key4: '101', key5: '2018-12-24', key6: '2018-1-4'}
-  ],
-  data: new Array(31).fill(0).map((v, index) => ({x: index + 1, y: random(0, 1.2)}))
+const getCurrentDay = () => {
+  return moment().date();
 };
 
 // 获取客户端IP
@@ -32,16 +29,12 @@ api.get('/main', async (req, res) => {
   res.send(await helper.fetchJsonByNode(req, url, option));
 });
 
-const DAY_KEYS = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven',
-  'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen', 'twenty',
-  'twentyOne', 'twentyTwo', 'twentyThree', 'twentyFour', 'twentyFive', 'twentySix', 'twentySeven',
-  'twentyEight', 'twentyNine', 'thirty', 'thirtyOne'];
-const MONTH_KEYS = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september',
-  'october', 'november', 'december'];
-
-const getCurrentDay = () => {
-  return moment().date();
-};
+// 获取主面板的信息（带工单号）
+api.get('/main/:no', async (req, res) => {
+  const url = `${host}/single_panel/showBaseInfo`;
+  const option = helper.postOption({macAddr: getIP(req), orderNo: req.params.no});
+  res.send(await helper.fetchJsonByNode(req, url, option));
+});
 
 // 获取主面板图表
 api.get('/chart/:type', async (req, res) => {
@@ -63,12 +56,16 @@ api.get('/chart/:type', async (req, res) => {
 
 // 作业上岗登陆
 api.post('/login/user', async (req, res) => {
-  if (req.body.user !== '12345678') {
-    res.send({returnCode: -1, returnMsg: '员工编码不存在，请重新输入'});
-  } else {
-    data.user = {name: '张小姐', level: '11级'};
-    res.send({returnCode: 0, result: data.user});
-  }
+  const url = `${host}/task_post/startTask`;
+  const option = helper.postOption({macAddr: getIP(req), employeeNo: req.body.user});
+  res.send(await helper.fetchJsonByNode(req, url, option));
+});
+
+// 工程内检或QC巡检
+api.post('/login/check', async (req, res) => {
+  const url = `${host}/qc/insertQc`;
+  const option = helper.postOption({macAddr: getIP(req), ...req.body});
+  res.send(await helper.fetchJsonByNode(req, url, option));
 });
 
 export default api;
