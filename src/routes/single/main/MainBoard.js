@@ -8,12 +8,12 @@ import {Button} from 'antd';
 import moment from 'moment';
 
 const COLS = [
-  {key: 'key1', title: '工单号'},
-  {key: 'key2', title: '品番'},
-  {key: 'key3', title: '标准周期'},
-  {key: 'key4', title: '注塑机编号'},
-  {key: 'key5', title: '制造开始时间'},
-  {key: 'key6', title: '制造结束时间'},
+  {key: 'orderNo', title: '工单号'},
+  {key: 'partsNo', title: '品番'},
+  {key: 'stdCycleTime', title: '标准周期'},
+  {key: 'machineNo', title: '注塑机编号'},
+  {key: 'mStart', title: '制造开始时间'},
+  {key: 'mEnd', title: '制造结束时间'},
 ];
 
 const PIES = [
@@ -127,7 +127,7 @@ class MainBoard extends React.Component {
     user: PropTypes.object,
     workCheck: PropTypes.object,
     QCheck: PropTypes.object,
-    items: PropTypes.array,
+    orders: PropTypes.array,
     day: PropTypes.array,
     month: PropTypes.array,
     chart: PropTypes.string.isRequired,
@@ -210,7 +210,7 @@ class MainBoard extends React.Component {
   };
 
   render() {
-    const {user={}, workCheck={}, QCheck={}, items=[], data=[]} = this.props;
+    const {user={}, workCheck={}, QCheck={}, orders=[], data=[]} = this.props;
     const style = {lineHeight: '20px', paddingTop: '10px', whiteSpace: 'pre-wrap'};
     return (
       <div className={s.root}>
@@ -239,7 +239,7 @@ class MainBoard extends React.Component {
           <div>
             <div onClick={this.onListClick} data-expand={this.isExpand('list')}>
               <div>工单列表</div>
-              <div><Table cols={COLS} items={items}/></div>
+              <div><Table cols={COLS} items={orders}/></div>
             </div>
           </div>
         </div>

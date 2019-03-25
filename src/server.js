@@ -38,7 +38,7 @@ global.isServer = true;
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json({limit: '512kb'}));
+app.use(bodyParser.json({limit: '512kb', strict: false}));
 
 if (process.env.NODE_ENV !== 'production') {
   app.enable('trust proxy');
@@ -66,6 +66,11 @@ app.get('*', async (req, res, next) => {
       },
       store: global.store,
     };
+
+    if (req.path !== '/') {
+      res.redirect(302, '/');
+      return;
+    }
 
     const route = await UniversalRouter.resolve(routes, {
       path: req.path,

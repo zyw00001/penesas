@@ -7,6 +7,7 @@ import execWithLoading from '../../../common/execWithLoading';
 
 const action = new Action(['main']);
 const URL_MAIN = '/api/single/main';
+const URL_ORDERS = '/api/single/orders';
 const URL_CHART_DAY = '/api/single/chart/day';
 const URL_CHART_MONTH = '/api/single/chart/month';
 
@@ -27,8 +28,8 @@ const convertData = (payload) => {
   return payload;
 };
 
-export const setUser = (user) => {
-  global.store.dispatch(action.assign({user}));
+export const getOrders = () => {
+  return global.store.getState().main.orders || [];
 };
 
 export const refresh = (orderNo='') => {
@@ -47,6 +48,7 @@ const initActionCreator = () => async (dispatch) => {
   try {
     dispatch(action.assign({status: 'loading'}));
     const payload = convertData(helper.getJsonResult(await helper.fetchJson(URL_MAIN)));
+    payload.orders = helper.getJsonResult(await helper.fetchJson(URL_ORDERS)) || [];
     payload.day = helper.getJsonResult(await helper.fetchJson(URL_CHART_DAY));
     payload.month = helper.getJsonResult(await helper.fetchJson(URL_CHART_MONTH));
     payload.chart = 'day';

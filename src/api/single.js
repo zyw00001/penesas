@@ -18,8 +18,9 @@ const getCurrentDay = () => {
 
 // 获取客户端IP
 const getIP = (req) => {
-  const ip = req.ip.split(':');
-  return ip[ip.length - 1];
+  //const ip = req.ip.split(':');
+  //return ip[ip.length - 1];
+  return '10.0.0.18';
 };
 
 // 获取主面板的信息
@@ -54,6 +55,19 @@ api.get('/chart/:type', async (req, res) => {
   res.send(json);
 });
 
+// 获取未完成的订单
+api.get('/orders', async (req, res) => {
+  const url = `${host}/load_input_force/getMachineUncompleteOrders`;
+  const option = helper.postOption({macAddr: getIP(req)});
+  res.send(await helper.fetchJsonByNode(req, url, option));
+});
+
+// 获取时间段
+api.get('/times/:order', async (req, res) => {
+  const url = `${host}/load_input_force/getUncompleteOrderLoadInputForce/${req.params.order}`;
+  res.send(await helper.fetchJsonByNode(req, url));
+});
+
 // 作业上岗登陆
 api.post('/login/user', async (req, res) => {
   const url = `${host}/task_post/startTask`;
@@ -65,6 +79,20 @@ api.post('/login/user', async (req, res) => {
 api.post('/login/check', async (req, res) => {
   const url = `${host}/qc/insertQc`;
   const option = helper.postOption({macAddr: getIP(req), ...req.body});
+  res.send(await helper.fetchJsonByNode(req, url, option));
+});
+
+// 负荷入力登录
+api.post('/login/load', async (req, res) => {
+  const url = `${host}/employee_info/login`;
+  const option = helper.postOption({employeeNo: req.body.username, password: req.body.password});
+  res.send(await helper.fetchJsonByNode(req, url, option));
+});
+
+// 负荷入力提交
+api.post('/load/commit', async (req, res) => {
+  const url = `${host}/load_input_force/insertLoadInputForce`;
+  const option = helper.postOption(req.body);
   res.send(await helper.fetchJsonByNode(req, url, option));
 });
 

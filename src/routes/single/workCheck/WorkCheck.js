@@ -7,7 +7,7 @@ import {Input, Select, Button, Radio, Checkbox} from 'antd';
 import Link from "../../../components/Link";
 import execWithLoading from '../../../common/execWithLoading';
 import helper from '../../../common';
-import {refresh} from '../main/MainBoardContainer';
+import {refresh, getOrders} from '../main/MainBoardContainer';
 import {jump} from '../../../components/Link';
 
 const RadioGroup = Radio.Group;
@@ -30,13 +30,17 @@ class WorkCheck extends React.Component {
     isQC: PropTypes.bool
   };
 
-  state = {
-    result: '1',
-    trouble: [],
-    options: ['002', '003'],
-    orderNo: '002',
-    user: ''
-  };
+  constructor(props) {
+    super(props);
+    const orders = getOrders();
+    this.state = {
+      result: '1',
+      trouble: [],
+      options: orders,
+      orderNo: orders.length ? orders[0].orderNo : '',
+      user: ''
+    }
+  }
 
   onResultChange = (e) => {
     this.setState({result: e.target.value});
@@ -84,6 +88,7 @@ class WorkCheck extends React.Component {
   selectProps = () => {
     return {
       value: this.state.orderNo,
+      optionLabelProp: 'value',
       onSelect: (value) => this.setState({orderNo: value})
     };
   };
@@ -96,6 +101,14 @@ class WorkCheck extends React.Component {
     };
   };
 
+  renderOption = (option, index) => {
+    return (
+      <SelectOption key={index} value={option.orderNo}>
+        {`${option.orderNo} | ${option.partsNo}`}
+      </SelectOption>
+    );
+  };
+
   render() {
     const {isQC} = this.props;
     return (
@@ -105,7 +118,7 @@ class WorkCheck extends React.Component {
             <div>工单号:</div>
             <div>
               <Select {...this.selectProps()}>
-                {this.state.options.map((option, index) => <SelectOption key={index} value={option}>{option}</SelectOption>)}
+                {this.state.options.map(this.renderOption)}
               </Select>
             </div>
           </div>
