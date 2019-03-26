@@ -7,6 +7,10 @@ import {jump} from '../../../components/Link';
 
 const action = new Action(['all']);
 
+export const getActiveKey = () => {
+  return global.store.getState().all.activeKey;
+};
+
 const initActionCreator = () => async (dispatch) => {
   try {
     dispatch(action.assign({
@@ -22,7 +26,7 @@ const initActionCreator = () => async (dispatch) => {
 
 const clickActionCreator = (key) => (dispatch) => {
   dispatch(action.assign({activeKey: key}));
-  jump('/all');
+  jump('/all/bar');
 };
 
 const mapStateToProps = (state) => {

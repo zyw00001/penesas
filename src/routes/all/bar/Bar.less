@@ -1,0 +1,24 @@
+@border-color: #797979;
+
+.root {
+  height: 100vh;
+  border: 1px solid @border-color;
+  white-space: nowrap;
+  overflow: hidden;
+
+  > :first-child {
+    float: left;
+    width: 100px;
+    height: 100%;
+    border-right: 1px solid @border-color;
+
+    > * {
+      max-height: 150px;
+      height: ~'calc(100% / 6)';
+
+      &:not(:last-child) {
+        border-bottom: 1px solid @border-color;
+      }
+    }
+  }
+}

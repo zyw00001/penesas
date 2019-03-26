@@ -1,0 +1,78 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+import withStyles from 'isomorphic-style-loader/withStyles';
+import s from './Bar.less';
+import {VictoryPie, VictoryBar} from 'victory';
+import {getActiveKey} from '../main/MainBoardContainer';
+
+const PIES = [
+  {key: 'waterHole', title: '水口'},
+  {key: 'burr', title: '毛刺'},
+  {key: 'oil', title: '油污'},
+  {key: 'face', title: '外观'},
+  {key: 'bale', title: '捆绑'},
+  {key: 'other', title: '其他'},
+];
+
+const Pie = ({count=0, total=1, label, active}) => {
+  const props = {
+    data: [{x: count, y: count}, {x: '', y: total - count}],
+    style: {data: {stroke: 'black', strokeWidth: 3}},
+    labels: d => d.x,
+    labelRadius: 60,
+    colorScale: ['#ff9966', active ? 'pink' : '#c9c9c9'],
+  };
+  const parentStyle = {position: 'relative'};
+  const labelStyle = {
+    position: 'absolute',
+    width: '100%',
+    textAlign: 'center',
+    bottom: '30%',
+    lineHeight: '1',
+    pointerEvents: 'none'
+  };
+  return (
+    <div style={parentStyle}>
+      <VictoryPie {...props} />
+      <div style={labelStyle}>{label}</div>
+    </div>
+  );
+};
+
+class Bar extends React.Component {
+  static propTypes = {
+    onClick: PropTypes.func
+  };
+
+  state = {activeKey: 'waterHole'};
+
+  componentWillMount() {
+    const activeKey = getActiveKey();
+    if (activeKey !== this.state.activeKey) {
+      this.setState({activeKey});
+    }
+  }
+
+  renderPies = () => {
+    const pieProps = (item, index) => {
+      return {
+        key: index,
+        count: this.props[item.key] || 0,
+        total: this.props.realCycle,
+        label: item.title,
+        active: this.state.activeKey === item.key
+      };
+    };
+    return <div>{PIES.map((item, index) => <Pie {...pieProps(item, index)} />)}</div>;
+  };
+
+  render() {
+    return (
+      <div className={s.root}>
+        {this.renderPies()}
+      </div>
+    );
+  }
+}
+
+export default withStyles(s)(Bar);
