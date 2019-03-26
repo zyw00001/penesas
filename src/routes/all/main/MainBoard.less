@@ -1,3 +1,27 @@
+@border-color: #797979;
 
 .root {
+  height: 100vh;
+  border: 1px solid @border-color;
+  background: #e4e4e4;
+  text-align: center;
+
+  > :first-child {
+    font-size: 24px;
+    line-height: 3;
+    height: 72px;
+    border-bottom: 1px solid @border-color;
+  }
+
+  > :last-child {
+    margin: ~'calc((100vh - 472px) / 2)' auto 0;
+    max-width: 600px;
+
+    > * {
+      display: inline-block;
+      vertical-align: top;
+      width: ~'calc(100% / 3)';
+      height: 200px;
+    }
+  }
 }

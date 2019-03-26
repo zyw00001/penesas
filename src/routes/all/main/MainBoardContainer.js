@@ -3,13 +3,16 @@ import {EnhanceLoading} from '../../../components/Enhance';
 import MainBoard from './MainBoard';
 import {Action} from '../../../action-reducer/action';
 import helper from '../../../common';
+import {jump} from '../../../components/Link';
 
 const action = new Action(['all']);
 
 const initActionCreator = () => async (dispatch) => {
   try {
     dispatch(action.assign({
-      status: 'page'
+      status: 'page',
+      realCycle: 65,
+      waterHole: 20
     }));
   } catch (e) {
     dispatch(action.assign({status: 'retry'}));
@@ -17,12 +20,18 @@ const initActionCreator = () => async (dispatch) => {
   }
 };
 
+const clickActionCreator = (key) => (dispatch) => {
+  dispatch(action.assign({activeKey: key}));
+  jump('/all');
+};
+
 const mapStateToProps = (state) => {
   return state.all || {};
 };
 
 const actionCreators = {
-  onInit: initActionCreator
+  onInit: initActionCreator,
+  onClick: clickActionCreator
 };
 
 const Container = connect(mapStateToProps, actionCreators)(EnhanceLoading(MainBoard));
