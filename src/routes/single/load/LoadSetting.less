@@ -1,36 +1,30 @@
+@import '../../../components/variables.less';
+
 .root {
   white-space: nowrap;
-
-  > * {
-    display: inline-block;
-    vertical-align: top;
-  }
+  font-size: @font-size-base;
 
   > :first-child {
     padding: 20px;
-    width: 300px;
+    width: 350px;
     height: inherit;
     border-right: 2px solid #797979;
+    float: left;
 
     > *:not(:last-child) {
       margin-bottom: 20px;
-      line-height: 28px;
+      line-height: @input-height-base;
 
       > :first-child {
-        width: 70px;
+        width: 90px;
         float: left;
-        font-size: 14px;
       }
 
       > :last-child {
-        margin-left: 70px;
+        margin-left: 90px;
 
         :global(.ant-select) {
           width: 100%;
-        }
-
-        input {
-          border: 1px solid #797979;
         }
       }
     }
@@ -42,14 +36,17 @@
   }
 
   > :last-child {
-    width: ~'calc(100% - 300px)';
     padding: 10px 20px;
+    overflow: hidden;
   }
 
   > [data-role='login'] {
+    margin: 0 auto;
+    max-width: 300px;
+
     > :first-child {
       text-align: center;
-      font-size: 18px;
+      font-size: 24px;
       margin-bottom: 40px;
     }
 
@@ -59,7 +56,6 @@
 
       > :first-child {
         margin-bottom: 10px;
-        font-size: 14px;
       }
     }
 
@@ -75,39 +71,48 @@
   }
 
   > [data-role='setting'] {
-    > :first-child {
-      text-align: center;
-      font-size: 18px;
-      margin-bottom: 20px;
-    }
+    overflow: auto;
+    height: 100vh;
 
-    > :nth-child(2) {
-      > * {
-        margin-bottom: 5px;
-        line-height: 28px;
-
-        > :first-child {
-          display: inline-block;
-          width: 70px;
-        }
-
-        > :last-child {
-          width: ~'calc(100% - 70px)';
-        }
-
-        :global(.ant-input-number) {
-          border-width: 0 !important;
-          border-bottom: 1px solid grey !important;
-          box-shadow: none !important;
-        }
-      }
-    }
-
-    > :last-child {
-      text-align: right;
+    > div {
+      margin: 0 auto;
+      max-width: 420px;
 
       > :first-child {
-        margin-right: 5px;
+        text-align: center;
+        font-size: 24px;
+        margin-bottom: 20px;
+      }
+
+      > :nth-child(2) {
+        > * {
+          margin-bottom: 5px;
+          line-height: @input-height-base;
+
+          > :first-child {
+            display: inline-block;
+            width: 120px;
+          }
+
+          > :last-child {
+            width: ~'calc(100% - 120px)';
+          }
+
+          :global(.ant-input-number) {
+            border-width: 0 !important;
+            border-color: @input-border-color !important;
+            border-bottom-width: 2px !important;
+            box-shadow: none !important;
+          }
+        }
+      }
+
+      > :last-child {
+        text-align: right;
+
+        > :first-child {
+          margin-right: 5px;
+        }
       }
     }
   }

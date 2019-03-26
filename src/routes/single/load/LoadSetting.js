@@ -168,6 +168,7 @@ class LoadSetting extends React.Component {
     return {
       value: this.state.orderNo,
       optionLabelProp: 'value',
+      dropdownMatchSelectWidth: false,
       onSelect: this.onOrderSelect
     };
   };
@@ -207,6 +208,7 @@ class LoadSetting extends React.Component {
     return {
       value: this.state.password,
       type: 'password',
+      autoComplete: 'new-password',
       onChange: e => this.setState({password: e.target.value})
     }
   };
@@ -266,13 +268,15 @@ class LoadSetting extends React.Component {
     };
     return (
       <div data-role='setting'>
-        <div>加工时间</div>
         <div>
-          {FIELDS.map(renderItem)}
-        </div>
-        <div>
-          <Button onClick={this.onCommit}>提交</Button>
-          <Button><Link to='/'>返回</Link></Button>
+          <div>加工时间</div>
+          <div>
+            {FIELDS.map(renderItem)}
+          </div>
+          <div>
+            <Button onClick={this.onCommit}>提交</Button>
+            <Button><Link to='/'>返回</Link></Button>
+          </div>
         </div>
       </div>
     );

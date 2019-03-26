@@ -37,10 +37,9 @@
     "source-map-support": "^0.4.6",
     "stompjs": "^2.3.3",
     "universal-router": "^2.0.0",
-    "victory": "^0.23.1",
+    "victory": "^32.1.0",
     "whatwg-fetch": "^2.0.1",
-    "ws": "^5.1.1",
-    "xlsx": "^0.14.1"
+    "ws": "^5.1.1"
   },
   "devDependencies": {
     "assets-webpack-plugin": "^3.5.0",

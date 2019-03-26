@@ -97,7 +97,7 @@ class WorkCheck extends React.Component {
     return {
       value: this.state.user,
       placeholder: '限定输入8位',
-      onChange: e => this.setState({user: e.target.value})
+      onChange: e => e.target.value.length <= 8 && this.setState({user: e.target.value})
     };
   };
 

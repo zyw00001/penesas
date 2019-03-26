@@ -38,13 +38,21 @@ const Table = ({cols, items}) => {
 
 const Pie = ({count=0, total=1, label}) => {
   const props = {
-    data: [{x: count, y: count}, {x: '', y: total - count}],
+    data: [{y: count}, {y: total - count}],
     style: {data: {stroke: 'black', strokeWidth: 3}},
-    labels: d => d.x,
-    labelRadius: 60,
+    labels: () => '',
     colorScale: ['#99ffff', 'pink']
   };
   const parentStyle = {position: 'relative'};
+  const countStyle = {
+    position: 'absolute',
+    width: '100%',
+    top: '25px',
+    textAlign: count > 0 ? 'left' : 'center',
+    left: count > 0 ? 'calc(50% + 2px)' : '0',
+    fontSize: '14px',
+    lineHeight: '1'
+  };
   const labelStyle = {
     position: 'absolute',
     width: '100%',
@@ -55,6 +63,7 @@ const Pie = ({count=0, total=1, label}) => {
   return (
     <div style={parentStyle}>
       <VictoryPie {...props} />
+      <div style={countStyle}>{count}</div>
       <div style={labelStyle}>{label}</div>
     </div>
   );
@@ -202,16 +211,16 @@ class MainBoard extends React.Component {
     }, 0);
   };
 
-  renderPies = () => {
+  renderPies = (total) => {
     const renderPie = (item, index) => {
-      return <Pie key={index} count={this.props[item.key] || 0} total={this.props.realCycle} label={item.title}/>;
+      return <Pie key={index} count={this.props[item.key] || 0} total={total} label={item.title}/>;
     };
     return <div>{PIES.map(renderPie)}</div>;
   };
 
   render() {
-    const {user={}, workCheck={}, QCheck={}, orders=[], data=[]} = this.props;
-    const style = {lineHeight: '20px', paddingTop: '10px', whiteSpace: 'pre-wrap'};
+    const {user={}, workCheck={}, QCheck={}, orders=[], realCycle} = this.props;
+    const style = {lineHeight: '20px', paddingTop: '20px', whiteSpace: 'pre-wrap'};
     return (
       <div className={s.root}>
         <div>
@@ -250,8 +259,8 @@ class MainBoard extends React.Component {
             <div>{this.props.partsNo}</div>
           </div>
           <div>
-            <PieStatistics count={this.calTrouble()} total={this.props.realCycle} />
-            {this.renderPies()}
+            {realCycle ? <PieStatistics count={this.calTrouble()} total={realCycle} /> : <div />}
+            {realCycle ? this.renderPies(realCycle) : <div />}
           </div>
           <div>
             <Chart month={this.props.month} day={this.props.day} type={this.props.chart} />

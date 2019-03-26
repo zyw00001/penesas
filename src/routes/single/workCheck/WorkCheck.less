@@ -1,26 +1,39 @@
+@import '../../../components/variables.less';
+
 .root {
-  padding: 0 10%;
-  font-size: 14px;
+  padding: 0 20px;
+  font-size: @font-size-base;
 
   > * {
-    margin-top: ~'calc((100vh - 220px) / 2)';
+    margin: ~'calc((100vh - 310px) / 2)' auto 0;
+    max-width: 420px;
 
     > * {
       margin-bottom: 20px;
     }
 
+    > *:nth-child(4) {
+      margin-top: -20px;
+      margin-left: 100px;
+    }
+
     > *:last-child {
+      margin-top: 30px;
       text-align: right;
 
       > :first-child {
-        margin-right: 5px;
+        margin-right: 10px;
+      }
+
+      button {
+        border: 1px solid #797979;
       }
     }
   }
 
   [data-role='input'] {
     white-space: nowrap;
-    line-height: 28px;
+    line-height: @input-height-base;
 
     > * {
       display: inline-block;
@@ -28,13 +41,12 @@
     }
 
     > :first-child {
-      width: 60px;
-      text-align: right;
+      width: 90px;
       margin-right: 10px;
     }
 
     > :last-child {
-      width: ~'calc(100% - 70px)';
+      width: ~'calc(100% - 100px)';
     }
 
     :global(.ant-select) {
