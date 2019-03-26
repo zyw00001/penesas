@@ -23,6 +23,8 @@ import './less/index.less';
 
 const app = express();
 
+const VALID_PATHS = ['/', '/all'];
+
 //
 // Tell any CSS tooling (such as Material UI) to use all vendor prefixes if the
 // user agent is not known.
@@ -67,7 +69,7 @@ app.get('*', async (req, res, next) => {
       store: global.store,
     };
 
-    if (req.path !== '/') {
+    if (!VALID_PATHS.includes(req.path)) {
       res.redirect(302, '/');
       return;
     }

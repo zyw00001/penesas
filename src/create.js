@@ -4,14 +4,24 @@ import ReactDOM from 'react-dom';
 import FastClick from 'fastclick';
 import UniversalRouter from 'universal-router';
 import queryString from 'query-string';
-import { createPath } from 'history/PathUtils';
 import history from './core/history';
 import App from './components/App';
-import { ErrorReporter, deepForceUpdate } from './core/devUtils';
+import { ErrorReporter } from './core/devUtils';
 import getStore from './store';
 
-export default (routes) => {
+export default (children) => {
   global.store = getStore(window.initState);
+
+  const routes = {
+    children,
+    path: '/',
+    async action({ next }) {
+      const route = await next();
+      route.title = route.title ? `${route.title} - 天马` : '天马';
+      route.description = route.description || '';
+      return route;
+    }
+  };
 
   const context = {
     insertCss: (...styles) => {
@@ -101,9 +111,6 @@ export default (routes) => {
     currentLocation = location;
 
     try {
-      // Traverses the list of routes in the taskOrder they are defined until
-      // it finds the first route that matches provided URL path string
-      // and whose action method returns anything other than `undefined`.
       const route = await UniversalRouter.resolve(routes, {
         path: location.pathname,
         query: queryString.parse(location.search),
@@ -139,30 +146,7 @@ export default (routes) => {
     }
   }
 
-// Handle client-side navigation by using HTML5 History API
-// For more information visit https://github.com/mjackson/history#readme
   history.listen(onLocationChange);
   onLocationChange(currentLocation);
-
-// Enable Hot Module Replacement (HMR)
-  if (module.hot) {
-    module.hot.accept('./routes', () => {
-      routes = require('./routes').default; // eslint-disable-line global-require
-
-      if (appInstance) {
-        try {
-          // Force-update the whole tree, including components that refuse to update
-          deepForceUpdate(appInstance);
-        } catch (error) {
-          appInstance = null;
-          document.title = `Hot Update Error: ${error.message}`;
-          ReactDOM.render(<ErrorReporter error={error} />, container);
-          return;
-        }
-      }
-
-      onLocationChange(currentLocation);
-    });
-  }
 }
 

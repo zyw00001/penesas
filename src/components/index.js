@@ -1,9 +1,3 @@
-import Link from './Link';
-import Loading from './Loading';
-import Title from './Title';
-
-export {
-  Link,
-  Loading,
-  Title,
-};
+export Link from './Link';
+export Loading from './Loading';
+export Title from './Title';

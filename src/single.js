@@ -1,22 +1,11 @@
 import create from './create';
 
-create({
-  path: '/',
-
-  children: [
-    require('./routes/single/main').default,
-    require('./routes/single/login').default,
-    require('./routes/single/loginUser').default,
-    require('./routes/single/workCheck').default,
-    require('./routes/single/qcCheck').default,
-    require('./routes/single/load').default,
-    require('./routes/notFound').default
-  ],
-
-  async action({ next }) {
-    const route = await next();
-    route.title = route.title ? `${route.title} - 天马` : '天马';
-    route.description = route.description || '';
-    return route;
-  }
-});
+create([
+  require('./routes/single/main').default,
+  require('./routes/single/login').default,
+  require('./routes/single/loginUser').default,
+  require('./routes/single/workCheck').default,
+  require('./routes/single/qcCheck').default,
+  require('./routes/single/load').default,
+  require('./routes/notFound').default
+]);

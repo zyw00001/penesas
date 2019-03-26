@@ -4,11 +4,7 @@ export default {
 
   children: [
     require('./single/main').default,
-    require('./single/login').default,
-    require('./single/loginUser').default,
-    require('./single/workCheck').default,
-    require('./single/qcCheck').default,
-    require('./single/load').default,
+    require('./all/main').default,
     require('./notFound').default
   ],
 
