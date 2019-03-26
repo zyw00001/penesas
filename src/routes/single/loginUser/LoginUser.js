@@ -13,7 +13,7 @@ const URL_LOGIN = '/api/single/login/user';
 class LoginUser extends React.Component {
   state = {value: '', error: '', time: 0, login: false};
 
-  onBlur = () => {
+  onLogin = () => {
     if (!this.state.value) {
       if (this.state.error) {
         this.setState({error: ''});
@@ -54,7 +54,6 @@ class LoginUser extends React.Component {
       value: this.state.value,
       placeholder: '限定输入8位',
       onChange: e => this.setState({value: e.target.value}),
-      onBlur: this.onBlur,
       onFocus: this.onFocus
     };
   };
@@ -70,7 +69,9 @@ class LoginUser extends React.Component {
             <Input {...this.inputProps()} />
           </div>
           <div>
-            <Button type='primary'>{`在岗${time}`}</Button>
+            <Button type='primary' disabled={this.state.value.length !== 8} onClick={this.onLogin}>
+              {`在岗`}
+            </Button>
           </div>
         </div>
       </TabPage>
