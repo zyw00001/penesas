@@ -96,7 +96,7 @@ class LoadSetting extends React.Component {
         if (json.returnCode !== 0) {
           helper.showError(json.returnMsg);
         } else {
-          this.setState({login: true, username: '', password: ''});
+          this.setState({login: true, password: ''});
         }
       });
     }
@@ -106,7 +106,7 @@ class LoadSetting extends React.Component {
     execWithLoading(async () => {
       const keys = FIELDS.map(obj => obj.key).filter(key => key !== 'total');
       const time = this.state.time ? this.state.time.split(' -- ')[0] : '';
-      const body = {orderNo: this.state.orderNo, recordTime: time};
+      const body = {orderNo: this.state.orderNo, recordTime: time, employeeNo: this.state.username};
       for (const key of keys) {
         if (typeof this.state[key] === 'number') {
           body[key] = this.state[key]
