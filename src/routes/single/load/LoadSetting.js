@@ -10,6 +10,7 @@ import execWithLoading from '../../../common/execWithLoading';
 import helper from '../../../common';
 import {refresh, getOrders} from '../main/MainBoardContainer';
 import {jump} from '../../../components/Link';
+import moment from 'moment';
 
 const SelectOption = Select.Option;
 
@@ -51,6 +52,14 @@ const getTimes = (orderNo) => {
   });
 };
 
+const format = (time) => {
+  return moment(time).format('MM-DD HH:mm');
+};
+
+const percent = (count ,total) => {
+  return `${Number((count * 100 / total).toFixed(2))}%`;
+};
+
 const Pie = ({count=0, total=1}) => {
   const props = {
     data: [{x: '', y: count}, {x: '', y: total - count}],
@@ -59,7 +68,22 @@ const Pie = ({count=0, total=1}) => {
     labelRadius: 60,
     colorScale: ['#99ffff', 'pink']
   };
-  return <VictoryPie {...props} />;
+  const parentStyle = {position: 'relative', height: '100%'};
+  const labelStyle = {
+    position: 'absolute',
+    height: '100%',
+    top: 0,
+    fontSize: '16px'
+  };
+  const label1Style = Object.assign({right: 'calc(50% + 10px)', color: 'red'}, labelStyle);
+  const label2Style = Object.assign({left: 'calc(50% + 10px)', color: 'red'}, labelStyle);
+  return (
+    <div style={parentStyle}>
+      <VictoryPie {...props} />
+      <div style={label1Style}>{percent(count, total)}</div>
+      <div style={label2Style}>{`${count}/${total}`}</div>
+    </div>
+  );
 };
 
 class LoadSetting extends React.Component {
@@ -96,7 +120,7 @@ class LoadSetting extends React.Component {
         if (json.returnCode !== 0) {
           helper.showError(json.returnMsg);
         } else {
-          this.setState({login: true, username: '', password: ''});
+          this.setState({login: true, password: ''});
         }
       });
     }
@@ -105,8 +129,9 @@ class LoadSetting extends React.Component {
   onCommit = () => {
     execWithLoading(async () => {
       const keys = FIELDS.map(obj => obj.key).filter(key => key !== 'total');
-      const time = this.state.time ? this.state.time.split(' -- ')[0] : '';
-      const body = {orderNo: this.state.orderNo, recordTime: time};
+      const index = this.state.time;
+      const time = typeof index === 'number' ? this.state.timeOptions[index].startPeriod : '';
+      const body = {orderNo: this.state.orderNo, recordTime: time, employeeNo: this.state.username};
       for (const key of keys) {
         if (typeof this.state[key] === 'number') {
           body[key] = this.state[key]
@@ -138,7 +163,7 @@ class LoadSetting extends React.Component {
   onOrderChange = (value) => {
     getTimes(value).then(times => {
       if (times && times.length) {
-        this.setState({timeOptions: times, time: `${times[0].startPeriod} -- ${times[0].endPeriod}`});
+        this.setState({timeOptions: times, time: 0});
       } else {
         this.setState({timeOptions: [], time: ''});
       }
@@ -175,6 +200,7 @@ class LoadSetting extends React.Component {
 
   selectTimeProps = () => {
     return {
+      style: {fontSize: '16px'},
       value: this.state.time,
       dropdownMatchSelectWidth: false,
       onSelect: (value) => this.setState({time: value})
@@ -191,8 +217,8 @@ class LoadSetting extends React.Component {
 
   renderTimeOption = (option, index) => {
     return (
-      <SelectOption key={index}>
-        {`${option.startPeriod} -- ${option.endPeriod}`}
+      <SelectOption key={index} value={index}>
+        {`${format(option.startPeriod)} - ${format(option.endPeriod)}`}
       </SelectOption>
     );
   };
