@@ -7,8 +7,8 @@ import {jump} from '../../../components/Link';
 
 const action = new Action(['all']);
 
-export const getActiveKey = () => {
-  return global.store.getState().all.activeKey;
+export const getData = () => {
+  return global.store.getState().all || {};
 };
 
 const initActionCreator = () => async (dispatch) => {
