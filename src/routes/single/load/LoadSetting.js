@@ -11,6 +11,7 @@ import helper from '../../../common';
 import {refresh, getOrders} from '../main/MainBoardContainer';
 import {jump} from '../../../components/Link';
 import moment from 'moment';
+import SettingDialog from './SettingDialog';
 
 const SelectOption = Select.Option;
 
@@ -25,7 +26,7 @@ const FIELDS = [
   {key: 'face', title: '外观', unit: true},
   {key: 'bale', title: '捆绑', unit: true},
   {key: 'other', title: '其他', unit: true},
-  {key: 'remark', title: '备注', unit: true},
+  {key: 'remark', title: '备注', unit: true, readOnly: true},
   {key: 'total', title: '合计', unit: true, readOnly: true},
   {key: 'realCycle', title: '实际周期', unit: true},
   {key: 'workerNumber', title: '作业人数'},
@@ -98,6 +99,7 @@ class LoadSetting extends React.Component {
       timeOptions: [],
       username: '',
       password: '',
+      dialog: false,
       ...orders.length ? orders[0] : {},
     };
   }
@@ -283,12 +285,24 @@ class LoadSetting extends React.Component {
     );
   };
 
+  renderRemark = (props) => {
+    props.style.width = '100%';
+    props.placeholder = '点击设置备注';
+    return (
+      <span style={{display: 'inline-block'}} onClick={() => this.setState({dialog: true})}>
+        <InputNumber {...props} />
+        {this.state.dialog ? <SettingDialog /> : null}
+      </span>
+    );
+  };
+
   renderSetting = () => {
     const renderItem = (item) => {
+      const props = this.numberProps(item.key, item.readOnly);
       return (
         <div key={item.key}>
           <span>{`${item.title}${item.unit ? '(s)' : ''}:`}</span>
-          <InputNumber {...this.numberProps(item.key, item.readOnly)} />
+          {item.key === 'remark' ? this.renderRemark(props) : <InputNumber {...props} />}
         </div>
       );
     };
