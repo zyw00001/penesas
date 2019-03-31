@@ -5,11 +5,11 @@ import moment from 'moment';
 
 const api = express.Router();
 
-const DAY_KEYS = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven',
+const MONTH_KEYS = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven',
   'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen', 'twenty',
   'twentyOne', 'twentyTwo', 'twentyThree', 'twentyFour', 'twentyFive', 'twentySix', 'twentySeven',
   'twentyEight', 'twentyNine', 'thirty', 'thirtyOne'];
-const MONTH_KEYS = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september',
+const YEAR_KEYS = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september',
   'october', 'november', 'december'];
 
 const getCurrentDay = () => {
@@ -37,17 +37,34 @@ api.get('/main/:no', async (req, res) => {
   res.send(await helper.fetchJsonByNode(req, url, option));
 });
 
+const getChartInfo = (type) => {
+  const info ={};
+  if (type === 'year') {
+    info.path = 'showMonthChart';
+    info.keys = YEAR_KEYS;
+    info.count = YEAR_KEYS.length;
+  } else if (type === 'month') {
+    info.path = 'showDailyChart';
+    info.keys = MONTH_KEYS;
+    info.count = getCurrentDay();
+  } else {
+    info.path = 'showHourChart';
+    info.keys = MONTH_KEYS;
+    info.count = 24;
+  }
+  return info;
+};
+
 // 获取主面板图表
 api.get('/chart/:type', async (req, res) => {
-  const url = `${host}/single_panel/${req.params.type === 'day' ? 'showDailyChart' : 'showMonthChart'}`;
+  const {path, keys, count} = getChartInfo(req.params.type);
+  const url = `${host}/single_panel/${path}`;
   const option = helper.postOption({macAddr: getIP(req)});
   const json = await helper.fetchJsonByNode(req, url, option);
   if (json.returnCode === 0) {
-    const keys = req.params.type === 'day' ? DAY_KEYS : MONTH_KEYS;
-    const length = req.params.type === 'day' ? getCurrentDay() : keys.length;
     const obj = json.result;
     const result = [];
-    for (let i = 0; i < length; i++) {
+    for (let i = 0; i < count; i++) {
       result.push({x: i + 1, y: obj[keys[i]] || 0});
     }
     json.result = result;

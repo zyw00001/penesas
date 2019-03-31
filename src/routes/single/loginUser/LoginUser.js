@@ -6,7 +6,7 @@ import {Input, Button} from 'antd';
 import execWithLoading from '../../../common/execWithLoading';
 import helper from '../../../common';
 import {refresh} from '../main/MainBoardContainer';
-import {jump} from '../../../components/Link';
+import Link, {jump} from '../../../components/Link';
 
 const URL_LOGIN = '/api/single/login/user';
 
@@ -73,6 +73,9 @@ class LoginUser extends React.Component {
           <div>
             <Button type='primary' disabled={this.state.value.length !== 8} onClick={this.onLogin}>
               在岗
+            </Button>
+            <Button>
+              <Link to='/'>返回</Link>
             </Button>
           </div>
         </div>

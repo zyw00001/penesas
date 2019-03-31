@@ -10,6 +10,7 @@ import moment from 'moment';
 const COLS = [
   {key: 'orderNo', title: '工单号'},
   {key: 'partsNo', title: '品番'},
+  {key: 'partsName', title: '品番名'},
   {key: 'stdCycleTime', title: '标准周期'},
   {key: 'machineNo', title: '注塑机编号'},
   {key: 'mStart', title: '制造开始时间'},
@@ -25,9 +26,9 @@ const PIES = [
   {key: 'other', title: '其他'},
 ];
 
-const Table = ({cols, items}) => {
+const Table = ({cols, items, onRowClick}) => {
   const toCol = (col, index) => <th key={index}>{col.title}</th>;
-  const toRow = (item, index) => <tr key={index}>{cols.map((col, index) => <td key={index}>{item[col.key]}</td>)}</tr>;
+  const toRow = (item, index) => <tr key={index} onClick={onRowClick.bind(null, index)}>{cols.map((col, index) => <td key={index}>{item[col.key]}</td>)}</tr>;
   return (
     <table className={s.table}>
       <thead><tr>{cols.map(toCol)}</tr></thead>
@@ -47,7 +48,7 @@ const Pie = ({count=0, total=1, label}) => {
   const countStyle = {
     position: 'absolute',
     width: '100%',
-    top: '25px',
+    top: '25%',
     textAlign: count > 0 ? 'left' : 'center',
     left: count > 0 ? 'calc(50% + 2px)' : '0',
     fontSize: '14px',
@@ -57,7 +58,7 @@ const Pie = ({count=0, total=1, label}) => {
     position: 'absolute',
     width: '100%',
     textAlign: 'center',
-    top: '60px',
+    bottom: '25%',
     lineHeight: '1'
   };
   return (
@@ -98,7 +99,7 @@ const PieStatistics = ({count=0, total=1}) => {
   );
 };
 
-const Chart = ({month, day, type}) => {
+const Chart = ({data, month}) => {
   const CHART_COLOR = '#999999';
   const xStyle = {
     axis: {stroke: CHART_COLOR},
@@ -113,10 +114,9 @@ const Chart = ({month, day, type}) => {
     textAlign: 'center',
     fontSize: '20px',
     color: 'black',
-    top: '20px'
+    top: '5px'
   };
-  const data = type === 'day' ? day : month;
-  const length = type === 'day' ? moment().daysInMonth() : data.length;
+  const length = month ? moment().daysInMonth() : data.length;
   const tickValues = new Array(length).fill(0).map((item, index) => index + 1);
   return (
     <div style={{position: 'relative', background: 'white'}}>
@@ -140,7 +140,8 @@ class MainBoard extends React.Component {
     day: PropTypes.array,
     month: PropTypes.array,
     chart: PropTypes.string.isRequired,
-    onChartChange: PropTypes.func.isRequired
+    onChartChange: PropTypes.func.isRequired,
+    onRowClick: PropTypes.func.isRequired
   };
 
   state = {expand: ''};
@@ -220,7 +221,7 @@ class MainBoard extends React.Component {
 
   render() {
     const {user={}, workCheck={}, QCheck={}, orders=[], realCycle} = this.props;
-    const style = {lineHeight: '20px', paddingTop: '20px', whiteSpace: 'pre-wrap'};
+    const style = {lineHeight: '20px', paddingTop: '50px', whiteSpace: 'pre-wrap'};
     return (
       <div className={s.root}>
         <div>
@@ -240,7 +241,7 @@ class MainBoard extends React.Component {
           </div>
           <div>
             <div {...this.getProps('Q')}>
-              <div>Q</div>
+              <div>品</div>
               <div style={style}>{QCheck.time || ''}</div>
               <div>{this.getCheckTitle('QCheck')}</div>
             </div>
@@ -248,7 +249,7 @@ class MainBoard extends React.Component {
           <div>
             <div onClick={this.onListClick} data-expand={this.isExpand('list')}>
               <div>工单列表</div>
-              <div><Table cols={COLS} items={orders}/></div>
+              <div><Table cols={COLS} items={orders} onRowClick={this.props.onRowClick}/></div>
             </div>
           </div>
         </div>
@@ -257,16 +258,18 @@ class MainBoard extends React.Component {
             <div>{this.props.machineNo}</div>
             <div>{this.props.orderNo}</div>
             <div>{this.props.partsNo}</div>
+            <div>{this.props.partsName}</div>
           </div>
           <div>
             {realCycle ? <PieStatistics count={this.calTrouble()} total={realCycle} /> : <div />}
             {realCycle ? this.renderPies(realCycle) : <div />}
           </div>
           <div>
-            <Chart month={this.props.month} day={this.props.day} type={this.props.chart} />
+            <Chart data={this.props[this.props.chart]} month={this.props.chart === 'month'}/>
             <div onClick={e => e.stopPropagation()}>
               <Button onClick={() => this.props.onChartChange('day')}>日</Button>
               <Button onClick={() => this.props.onChartChange('month')}>月</Button>
+              <Button onClick={() => this.props.onChartChange('year')}>年</Button>
             </div>
           </div>
         </Link>

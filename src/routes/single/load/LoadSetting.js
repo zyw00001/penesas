@@ -5,11 +5,10 @@ import s from './LoadSetting.less';
 import TabPage from '../login/TabPage';
 import {Input, Select, Button, InputNumber} from 'antd';
 import {VictoryPie} from 'victory';
-import Link from "../../../components/Link";
 import execWithLoading from '../../../common/execWithLoading';
 import helper from '../../../common';
-import {refresh, getOrders} from '../main/MainBoardContainer';
-import {jump} from '../../../components/Link';
+import {refresh, getOrders, getRow} from '../main/MainBoardContainer';
+import Link, {jump} from '../../../components/Link';
 import moment from 'moment';
 import SettingDialog from './SettingDialog';
 
@@ -29,6 +28,12 @@ const FIELDS = [
   {key: 'remark', title: '备注', unit: true, readOnly: true},
   {key: 'total', title: '合计', unit: true, readOnly: true},
   {key: 'realCycle', title: '实际周期', unit: true},
+  {key: 'workerNumber', title: '作业人数'},
+  {key: 'theoryWorkerNumber', title: '理论人数'},
+];
+
+const FIELDS2 = [
+  {key: 'realCycle', title: '实际周期'},
   {key: 'workerNumber', title: '作业人数'},
   {key: 'theoryWorkerNumber', title: '理论人数'},
 ];
@@ -91,6 +96,7 @@ class LoadSetting extends React.Component {
   constructor(props) {
     super(props);
     const orders = getOrders();
+    const index = getRow();
     this.state = {
       orders,
       login: false,
@@ -100,7 +106,7 @@ class LoadSetting extends React.Component {
       username: '',
       password: '',
       dialog: false,
-      ...orders.length ? orders[0] : {},
+      ...orders.length ? orders[index > -1 ? index : 0] : {},
     };
   }
 
@@ -129,6 +135,13 @@ class LoadSetting extends React.Component {
   };
 
   onCommit = () => {
+    for (const item of FIELDS2) {
+      if (!this.state[item.key]) {
+        helper.showError(`${item.title}为必填，且不能为0`);
+        return;
+      }
+    }
+
     execWithLoading(async () => {
       const keys = FIELDS.map(obj => obj.key).filter(key => key !== 'total');
       const index = this.state.time;
@@ -212,7 +225,7 @@ class LoadSetting extends React.Component {
   renderOption = (option, index) => {
     return (
       <SelectOption key={index} value={option.orderNo}>
-        {`${option.orderNo} | ${option.partsNo}`}
+        {`${option.orderNo} | ${option.partsNo} | ${option.partsName}`}
       </SelectOption>
     );
   };
@@ -228,7 +241,8 @@ class LoadSetting extends React.Component {
   usernameProps = () => {
     return {
       value: this.state.username,
-      onChange: e => this.setState({username: e.target.value})
+      onChange: e => this.setState({username: e.target.value}),
+      onPressEnter: this.onLogin
     }
   };
 
@@ -237,7 +251,8 @@ class LoadSetting extends React.Component {
       value: this.state.password,
       type: 'password',
       autoComplete: 'new-password',
-      onChange: e => this.setState({password: e.target.value})
+      onChange: e => this.setState({password: e.target.value}),
+      onPressEnter: this.onLogin
     }
   };
 
@@ -336,13 +351,13 @@ class LoadSetting extends React.Component {
         </div>
         <div>
           <Button onClick={this.onLogin}>登录</Button>
+          <Button><Link to='/'>返回</Link></Button>
         </div>
       </div>
     );
   };
 
   render() {
-    const {isQC} = this.props;
     return (
       <TabPage className={s.root} active='load'>
         {this.renderLoad()}

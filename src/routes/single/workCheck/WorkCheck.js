@@ -89,6 +89,7 @@ class WorkCheck extends React.Component {
     return {
       value: this.state.orderNo,
       optionLabelProp: 'value',
+      dropdownMatchSelectWidth: false,
       onSelect: (value) => this.setState({orderNo: value})
     };
   };
@@ -104,7 +105,7 @@ class WorkCheck extends React.Component {
   renderOption = (option, index) => {
     return (
       <SelectOption key={index} value={option.orderNo}>
-        {`${option.orderNo} | ${option.partsNo}`}
+        {`${option.orderNo} | ${option.partsNo} | ${option.partsName}`}
       </SelectOption>
     );
   };
@@ -123,7 +124,7 @@ class WorkCheck extends React.Component {
             </div>
           </div>
           <div data-role='input'>
-            <div>{isQC ? 'QC员:' : '内检员:'}</div>
+            <div>{isQC ? '品保员:' : '内检员:'}</div>
             <div><Input {...this.inputProps()} /></div>
           </div>
           <div data-role='input'>

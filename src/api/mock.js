@@ -15,13 +15,14 @@ const data = {
 };
 
 const chart = {
-  day: genChart(moment().date()),
-  month: genChart(12)
+  day: genChart(24),
+  month: genChart(moment().date()),
+  year: genChart(12)
 };
 
 const orders =  [
-  {orderNo: 'K0941605', partsNo: '220023943-01', stdCycleTime: '65', machineNo: '101', mStart: '2018-12-24', mEnd: '2018-12-30'},
-  {orderNo: 'K0941700', partsNo: '220023943-01', stdCycleTime: '65', machineNo: '101', mStart: '2018-12-24', mEnd: '2018-1-4'}
+  {orderNo: 'K0941605', partsNo: '220023943-01', partsName: '品番1', stdCycleTime: '65', machineNo: '101', mStart: '2018-12-24', mEnd: '2018-12-30'},
+  {orderNo: 'K0941700', partsNo: '220023943-01', partsName: '品番2', stdCycleTime: '65', machineNo: '101', mStart: '2018-12-24', mEnd: '2018-1-4'}
 ];
 
 const times = {
