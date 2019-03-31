@@ -43,7 +43,7 @@ const makeTenData = (arr) => {
   const result = [];
   for (let i = 0; i < 10; i++) {
     if (i < arr.length) {
-      result.push({x: 10 - i, y: arr[i], label: `B${i + 1}`});
+      result.push({x: 10 - i, y: arr[i].data, label: arr[i].orderNo});
     } else {
       result.push({x: 10 - i, y: 0,});
     }
@@ -51,8 +51,8 @@ const makeTenData = (arr) => {
   return result;
 };
 
-const CommonBar = () => {
-  const data = makeTenData([2, 1.8, 1.6, 1.5, 1.4, 1.2, 1.0]);
+const CommonBar = ({data}) => {
+  data = makeTenData(data);
   const barProps = {
     data,
     horizontal: true,
@@ -96,12 +96,23 @@ class Bar extends React.Component {
     this.setState(getData());
   }
 
+  getBarData = () => {
+    return (this.state.machineSumInfoList || {})[this.state.activeKey] || [];
+  };
+
+  total = () => {
+    return PIES.reduce((result, item) => {
+      return result + (this.state[item.key] || 0);
+    }, 0);
+  };
+
   renderPies = () => {
+    const total = this.total();
     const pieProps = (item, index) => {
       return {
+        total,
         key: index,
         count: this.state[item.key] || 0,
-        total: this.state.realCycle,
         label: item.title,
         active: this.state.activeKey === item.key
       };
@@ -114,7 +125,7 @@ class Bar extends React.Component {
       <div className={s.root}>
         {this.renderPies()}
         <div>
-          <CommonBar />
+          <CommonBar data={this.getBarData()} />
         </div>
       </div>
     );

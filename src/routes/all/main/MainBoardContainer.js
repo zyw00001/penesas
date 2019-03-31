@@ -6,6 +6,7 @@ import helper from '../../../common';
 import {jump} from '../../../components/Link';
 
 const action = new Action(['all']);
+const URL_ALL =  '/api/all';
 
 export const getData = () => {
   return global.store.getState().all || {};
@@ -13,11 +14,10 @@ export const getData = () => {
 
 const initActionCreator = () => async (dispatch) => {
   try {
-    dispatch(action.assign({
-      status: 'page',
-      realCycle: 65,
-      waterHole: 20
-    }));
+    dispatch(action.assign({status: 'loading'}));
+    const payload = helper.getJsonResult(await helper.fetchJson(URL_ALL));
+    payload.status = 'page';
+    dispatch(action.assign(payload));
   } catch (e) {
     dispatch(action.assign({status: 'retry'}));
     helper.showError(e.message);

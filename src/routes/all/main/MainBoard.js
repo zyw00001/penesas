@@ -49,12 +49,19 @@ class MainBoard extends React.Component {
     onClick: PropTypes.func
   };
 
+  total = () => {
+    return PIES.reduce((result, item) => {
+      return result + (this.props[item.key] || 0);
+    }, 0);
+  };
+
   renderPies = () => {
+    const total = this.total();
     const pieProps = (item, index) => {
      return {
+       total,
        key: index,
        count: this.props[item.key] || 0,
-       total: this.props.realCycle,
        label: item.title,
        onClick: this.props.onClick.bind(null, item.key)
      };
