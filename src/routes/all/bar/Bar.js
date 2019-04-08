@@ -10,7 +10,7 @@ const PIES = [
   {key: 'burr', title: '毛刺'},
   {key: 'oil', title: '油污'},
   {key: 'face', title: '外观'},
-  {key: 'bale', title: '捆绑'},
+  {key: 'bale', title: '捆包'},
   {key: 'other', title: '其他'},
 ];
 

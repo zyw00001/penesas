@@ -14,13 +14,14 @@ const RadioGroup = Radio.Group;
 const CheckboxGroup = Checkbox.Group;
 const SelectOption = Select.Option;
 const URL_CHECK = '/api/single/login/check';
+const URL_USER = '/api/single/user';
 
 const TROUBLE_OPTIONS = [
   {label: '水口', value: 'waterHole'},
   {label: '毛刺', value: 'burr'},
   {label: '油污', value: 'oil'},
   {label: '外观', value: 'face'},
-  {label: '捆绑', value: 'bale'},
+  {label: '捆包', value: 'bale'},
   {label: '尺寸', value: 'size'},
   {label: '其他', value: 'other'},
 ];
@@ -40,6 +41,12 @@ class WorkCheck extends React.Component {
       orderNo: orders.length ? orders[0].orderNo : '',
       user: ''
     }
+  }
+
+  componentWillReceiveProps() {
+    const orders = this.state.options;
+    const orderNo = orders.length ? orders[0].orderNo : '';
+    this.setState({orderNo, result: '1', trouble: [], user: ''});
   }
 
   onResultChange = (e) => {
@@ -94,11 +101,37 @@ class WorkCheck extends React.Component {
     };
   };
 
+  onUserChange = (e) => {
+    const len = e.target.value.length;
+    if (len <= 8) {
+      this.setState({user: e.target.value});
+      if (len === 8) {
+        execWithLoading(async () => {
+          const url = `${URL_USER}/${e.target.value}`;
+          const json = await helper.fetchJson(url);
+          if (json.returnCode !== 0) {
+            helper.showError(json.returnMsg);
+          } else {
+            if (this.props.isQC) {
+              if (json.result.jobFeature !== 'patrolQc') {
+                helper.showError('该编号不是品保巡检人员');
+              }
+            } else {
+              if (json.result.jobFeature !== 'internalQc') {
+                helper.showError('该编号不是工程内检人员');
+              }
+            }
+          }
+        });
+      }
+    }
+  };
+
   inputProps = () => {
     return {
       value: this.state.user,
       placeholder: '限定输入8位',
-      onChange: e => e.target.value.length <= 8 && this.setState({user: e.target.value})
+      onChange: this.onUserChange
     };
   };
 

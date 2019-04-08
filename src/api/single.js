@@ -18,9 +18,12 @@ const getCurrentDay = () => {
 
 // 获取客户端IP
 const getIP = (req) => {
-  //const ip = req.ip.split(':');
-  //return ip[ip.length - 1];
-  return '10.0.0.18';
+  if (req.cookies.mac) {
+    return req.cookies.mac;
+  } else {
+    const ip = req.ip.split(':');
+    return ip[ip.length - 1];
+  }
 };
 
 // 获取主面板的信息
@@ -111,6 +114,12 @@ api.post('/load/commit', async (req, res) => {
   const url = `${host}/load_input_force/insertLoadInputForce`;
   const option = helper.postOption(req.body);
   res.send(await helper.fetchJsonByNode(req, url, option));
+});
+
+// 获取员工信息
+api.get('/user/:username', async (req, res) => {
+  const url = `${host}//employee_info/getEmployeeInfo/${req.params.username}`;
+  res.send(await helper.fetchJsonByNode(req, url));
 });
 
 export default api;

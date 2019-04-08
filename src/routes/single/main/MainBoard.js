@@ -22,7 +22,7 @@ const PIES = [
   {key: 'burr', title: '毛刺'},
   {key: 'oil', title: '油污'},
   {key: 'face', title: '外观'},
-  {key: 'bale', title: '捆绑'},
+  {key: 'bale', title: '捆包'},
   {key: 'other', title: '其他'},
 ];
 
@@ -118,10 +118,11 @@ const Chart = ({data, month}) => {
   };
   const length = month ? moment().daysInMonth() : data.length;
   const tickValues = new Array(length).fill(0).map((item, index) => index + 1);
+  const domain = data.length === 1 ? {y: [0, data[0].y || 0.5]} : {};
   return (
     <div style={{position: 'relative', background: 'white'}}>
       <div style={titleStyle}>负荷率</div>
-      <VictoryChart width={1024}>
+      <VictoryChart width={1024} domain={domain}>
         <VictoryLine data={data} style={{data: {stroke: '#4f81bd'}}}/>
         <VictoryScatter data={data} size={5} symbol='diamond' style={{data: {fill: '#4f81bd'}}} />
         <VictoryAxis style={xStyle} tickValues={tickValues} />

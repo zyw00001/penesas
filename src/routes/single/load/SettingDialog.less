@@ -1,0 +1,21 @@
+@import '../../../components/variables';
+
+.root :global(.ant-modal-body){
+  > div {
+    display: inline-block;
+    vertical-align: top;
+    width: ~'calc(100% / 3)';
+    white-space: nowrap;
+    margin: 5px 0;
+
+    > :first-child {
+      display: inline-block;
+      line-height: @input-height-base;
+      margin-right: 5px;
+    }
+
+    > :last-child {
+      display: inline-block;
+    }
+  }
+}

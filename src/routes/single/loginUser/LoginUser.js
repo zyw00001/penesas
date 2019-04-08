@@ -9,6 +9,7 @@ import {refresh} from '../main/MainBoardContainer';
 import Link, {jump} from '../../../components/Link';
 
 const URL_LOGIN = '/api/single/login/user';
+const URL_USER = '/api/single/user';
 
 class LoginUser extends React.Component {
   state = {value: '', error: '', login: false};
@@ -46,8 +47,20 @@ class LoginUser extends React.Component {
   };
 
   onChange = (e) => {
-    if (e.target.value.length <= 8) {
+    const len = e.target.value.length;
+    if (len <= 8) {
       this.setState({value: e.target.value});
+      if (len === 8) {
+        execWithLoading(async () => {
+          const url = `${URL_USER}/${e.target.value}`;
+          const json = await helper.fetchJson(url);
+          if (json.returnCode !== 0) {
+            this.setState({error: json.returnMsg});
+          } else if (json.result.jobFeature !== 'worker') {
+            this.setState({error: '该编号为非作业人员编号'});
+          }
+        });
+      }
     }
   };
 

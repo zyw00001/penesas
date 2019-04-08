@@ -17,13 +17,14 @@ const SelectOption = Select.Option;
 const URL_TIMES =  '/api/single/times';
 const URL_LOGIN = '/api/single/login/load';
 const URL_COMMIT = '/api/single/load/commit';
+const URL_USER = '/api/single/user';
 
 const FIELDS = [
   {key: 'waterHole', title: '水口', unit: true},
   {key: 'burr', title: '毛刺', unit: true},
   {key: 'oil', title: '油污', unit: true},
   {key: 'face', title: '外观', unit: true},
-  {key: 'bale', title: '捆绑', unit: true},
+  {key: 'bale', title: '捆包', unit: true},
   {key: 'other', title: '其他', unit: true},
   {key: 'remark', title: '备注', unit: true, readOnly: true},
   {key: 'total', title: '合计', unit: true, readOnly: true},
@@ -238,10 +239,29 @@ class LoadSetting extends React.Component {
     );
   };
 
+  onLoginUserChange = (e) => {
+    const len = e.target.value.length;
+    if (len <= 8) {
+      this.setState({username: e.target.value});
+      if (len === 8) {
+        execWithLoading(async () => {
+          const url = `${URL_USER}/${e.target.value}`;
+          const json = await helper.fetchJson(url);
+          if (json.returnCode !== 0) {
+            helper.showError(json.returnMsg);
+          } else if (json.result.jobFeature !== 'workerMonitor') {
+            helper.showError('该编号不是作业班长人员');
+          }
+        });
+      }
+    }
+  };
+
   usernameProps = () => {
     return {
       value: this.state.username,
-      onChange: e => this.setState({username: e.target.value}),
+      placeholder: '限定8位',
+      onChange: this.onLoginUserChange,
       onPressEnter: this.onLogin
     }
   };
@@ -300,13 +320,25 @@ class LoadSetting extends React.Component {
     );
   };
 
+  dialogProps = () => {
+    return {
+      afterClose: (sum) => {
+        if (sum === null) {
+          this.setState({dialog: false});
+        } else {
+          this.setState({dialog: false, remark: sum});
+        }
+      }
+    }
+  };
+
   renderRemark = (props) => {
     props.style.width = '100%';
     props.placeholder = '点击设置备注';
     return (
       <span style={{display: 'inline-block'}} onClick={() => this.setState({dialog: true})}>
         <InputNumber {...props} />
-        {this.state.dialog ? <SettingDialog /> : null}
+        {this.state.dialog ? <SettingDialog {...this.dialogProps()} /> : null}
       </span>
     );
   };
